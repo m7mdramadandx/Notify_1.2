@@ -1,10 +1,9 @@
 # Notify
-Android App for making written, audio recorded and drawing notes.
-
+Notify® is a simple and awesome noting app. It gives you a quick and simple note in many forms such as (text note, voice note and drawing note) that supports both online and offline notes .
+Taking notes with Notify® is easier than any other notepad or memo pad app.
 ## Built With
 
-Kotline-Firebase Auth-Firestore-RxJava-MVVM-Dependcy Injection-Material Designs
-
+Firebase - Kotlin - Viewmodel - Databinding - Rxjava - Dependency Injection - MediaPlayer - Material Designs
 ## Authors
 
 * [Muhammad Ramadan](https://www.linkedin.com/in/m7mdramadandx/)
