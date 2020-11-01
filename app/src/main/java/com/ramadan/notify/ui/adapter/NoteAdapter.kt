@@ -41,23 +41,25 @@ class NoteAdapter(val context: Notes) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == viewNote) {
-            val binding: NoteItemBinding = DataBindingUtil.inflate(
-                LayoutInflater.from(parent.context),
-                R.layout.note_item, parent, false
-            )
-            ViewNoteViewHolder(binding)
-        } else {
-            val view: View = LayoutInflater.from(parent.context)
-                .inflate(R.layout.add_item, parent, false)
-            AddNoteViewHolder(view)
-
+        return when (viewType) {
+            addNote -> {
+                val view: View = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.add_item, parent, false)
+                AddNoteViewHolder(view)
+            }
+            else -> {
+                val binding: NoteItemBinding = DataBindingUtil.inflate(
+                    LayoutInflater.from(parent.context),
+                    R.layout.note_item, parent, false
+                )
+                ViewNoteViewHolder(binding)
+            }
         }
     }
 
 
     override fun getItemCount(): Int {
-        return if (dataList.size > 0) {
+        return if (dataList.isNotEmpty()) {
             dataList.size + 1
         } else {
             1
@@ -65,12 +67,59 @@ class NoteAdapter(val context: Notes) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (getItemViewType(position) == viewNote) {
-            val writtenNote: WrittenNote = dataList[position - 1]
-            (holder as ViewNoteViewHolder).bind(writtenNote)
-        } else {
-            (holder as AddNoteViewHolder).addNote!!.setOnClickListener {
-                holder.mContext.startActivity(Intent(holder.mContext, Note::class.java))
+        when {
+            getItemViewType(position) == addNote -> {
+                (holder as AddNoteViewHolder).addNote!!.setOnClickListener {
+                    holder.mContext.startActivity(Intent(holder.mContext, Note::class.java))
+                }
+            }
+            else -> {
+                val writtenNote: WrittenNote = dataList[position - 1]
+                (holder as ViewNoteViewHolder).bind(writtenNote)
+
+
+//
+//                populateNativeAdView(nativeAd, holder.adView)
+
+//                MobileAds.initialize(holder.mContext) {}
+//
+//                val adLoader = AdLoader.Builder(holder.mContext,
+//                    holder.mContext.getString(R.string.native_advanced_ad_unit_id))
+//                Log.w("Adv", "00")
+//
+//                adLoader.forUnifiedNativeAd { unifiedNativeAd ->
+//                    Log.w("Adv", "01")
+//                    if (unifiedNativeAd != null) {
+//                        println("555555")
+//                        populateNativeAdView(unifiedNativeAd,
+//                            (holder as UnifiedNativeAdViewHolder).adView)
+//                    } else {
+//                        println("4444")
+//                    }
+//                }.withAdListener(object : AdListener() {
+//                    override fun onAdLoaded() {
+//                        super.onAdLoaded()
+//                        Log.w("Adv", "Success")
+//
+//                    }
+//
+//                    override fun onAdFailedToLoad(adError: LoadAdError) {
+//                        Log.w("Adv", LoadAdError.UNDEFINED_DOMAIN)
+//                    }
+//                }).build().loadAd(AdRequest.Builder().build())
+
+//                val videoOptions = VideoOptions.Builder()
+//                    .setStartMuted(true)
+//                    .build()
+//
+//                val adOptions = NativeAdOptions.Builder()
+//                    .setVideoOptions(videoOptions)
+//                    .build()
+//
+//                adLoader.withNativeAdOptions(adOptions)
+//
+//                adLoader.build().loadAd(AdRequest.Builder().build())
+
             }
         }
     }
@@ -130,4 +179,6 @@ class NoteAdapter(val context: Notes) :
         val mContext: Context = itemView.context
         val addNote: ImageButton? = itemView.findViewById(R.id.addItem)
     }
+
+
 }

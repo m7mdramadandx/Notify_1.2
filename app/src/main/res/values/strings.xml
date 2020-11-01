@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Notify</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id2">ca-app-pub-5169956365910255/6304844898</string>
+    <string name="native_advanced_ad_unit_id">ca-app-pub-5169956365910255/9396583108</string>
+    <string name="ad_id">ca-app-pub-5169956365910255~6726952079</string>
+
+
 </resources>

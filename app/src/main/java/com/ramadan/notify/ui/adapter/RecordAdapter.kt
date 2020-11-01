@@ -71,10 +71,7 @@ class RecordAdapter(private val filepath: Array<String?>?) :
             val addRecordViewHolder = AddRecordViewHolder(holder.itemView)
             addRecordViewHolder.addNote!!.setOnClickListener {
                 addRecordViewHolder.mContext.startActivity(
-                    Intent(
-                        addRecordViewHolder.mContext,
-                        Record::class.java
-                    )
+                    Intent(addRecordViewHolder.mContext, Record::class.java)
                 )
             }
         }

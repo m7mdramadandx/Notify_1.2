@@ -4,13 +4,24 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.ramadan.notify.R
-import com.ramadan.notify.utils.startAppIntroActivity
+import com.ramadan.notify.ui.viewModel.AuthViewModel
+import com.ramadan.notify.ui.viewModel.AuthViewModelFactory
+import com.ramadan.notify.utils.startHomeActivity
 import com.ramadan.notify.utils.startLoginActivity
 import kotlinx.android.synthetic.main.splash_screen.*
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.kodein
+import org.kodein.di.generic.instance
 
 
-class SplashScreen : AppCompatActivity() {
+class SplashScreen : AppCompatActivity(), KodeinAware {
+    override val kodein by kodein()
+    private val factory: AuthViewModelFactory by instance()
+    private val viewModel by lazy {
+        ViewModelProviders.of(this, factory).get(AuthViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,10 +32,13 @@ class SplashScreen : AppCompatActivity() {
             this,
             R.anim.animate_in_out_enter
         )
-        animation.duration = 1500
+        animation.duration = 500
         notifyLogo.animation = animation
         Handler().postDelayed(Runnable {
-            startLoginActivity()
-        }, 2000)
+            if (viewModel.user?.isAnonymous != null)
+                startHomeActivity()
+            else
+                startLoginActivity()
+        }, 800)
     }
 }

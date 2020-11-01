@@ -3,7 +3,6 @@
 package com.ramadan.notify.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,11 +45,9 @@ class Records : Fragment(), NoteListener {
     }
 
     override fun onStarted() {
-        TODO("Not yet implemented")
     }
 
     override fun onSuccess() {
-        TODO("Not yet implemented")
     }
 
     override fun onFailure(message: String) {

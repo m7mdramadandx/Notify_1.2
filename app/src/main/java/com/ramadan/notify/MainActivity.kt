@@ -5,16 +5,21 @@ package com.ramadan.notify
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.Window
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
+import com.google.android.gms.ads.*
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ramadan.notify.ui.activity.*
 import com.ramadan.notify.ui.adapter.ViewPagerAdapter
-import com.ramadan.notify.ui.viewModel.*
+import com.ramadan.notify.ui.viewModel.AuthViewModel
+import com.ramadan.notify.ui.viewModel.AuthViewModelFactory
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment
 import com.yalantis.contextmenu.lib.MenuObject
 import com.yalantis.contextmenu.lib.MenuParams
@@ -33,9 +38,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     private val records: Records = Records()
     private val whiteboards: Whiteboards = Whiteboards()
     private lateinit var contextMenuDialogFragment: ContextMenuDialogFragment
+    lateinit var mAdView: AdView
+    private lateinit var mInterstitialAd: InterstitialAd
+    val TAG = "Adv"
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
@@ -50,7 +57,62 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         tabLayout.getTabAt(1)!!.setIcon(R.drawable.record).contentDescription = "Voice notes"
         tabLayout.getTabAt(2)!!.setIcon(R.drawable.whiteboard).contentDescription = "Drawing notes"
         initMenuFragment()
+
+        MobileAds.initialize(this) {}
+
+        mAdView = findViewById(R.id.adView)
+        mAdView.loadAd(AdRequest.Builder().build())
+
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+        mInterstitialAd.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+                mInterstitialAd.show()
+            }
+        }
+
+//        val channel = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            NotificationChannel("App", "Notify", NotificationManager.IMPORTANCE_DEFAULT)
+//            val manager: NotificationManager = getSystemService(NotificationManager::class.java)
+//
+//        } else {
+//            TODO("VERSION.SDK_INT < O")
+//        }
+
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener
+        { task ->
+            if (!task.isSuccessful) {
+                Log.w("Adv", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+            Log.w("Adv", token)
+            Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
+        })
+
     }
+
+    fun onNewToken(token: String) {
+        Log.d("Adv", "Refreshed token: $token")
+
+        // If you want to send messages to this application instance or
+        // manage this apps subscriptions on the server side, send the
+        // FCM registration token to your app server.
+        sendRegistrationToServer(token)
+    }
+
+    private fun sendRegistrationToServer(token: String?) {
+        // TODO: Implement this method to send token to your app server.
+        Log.d("Adv", "sendRegistrationTokenToServer($token)")
+    }
+
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()

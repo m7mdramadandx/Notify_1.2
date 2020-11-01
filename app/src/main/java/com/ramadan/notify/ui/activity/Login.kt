@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
@@ -57,7 +56,6 @@ class Login : AppCompatActivity(), AuthListener, KodeinAware {
         binding.lifecycleOwner = this
         viewModel.authListener = this
         supportActionBar?.hide()
-        viewModel.user?.let { startHomeActivity() }
         configureGoogleSignIn()
 
         forgot.setOnClickListener {
@@ -87,8 +85,6 @@ class Login : AppCompatActivity(), AuthListener, KodeinAware {
                 val account = task.getResult(ApiException::class.java)
                 viewModel.loginWithGoogle(account!!)
             } catch (e: ApiException) {
-                println(e)
-                Log.e("Google", e.statusCode.toString())
                 Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
             }
         }

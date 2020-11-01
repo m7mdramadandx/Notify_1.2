@@ -12,13 +12,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.fragment.app.DialogFragment
+import com.google.android.gms.ads.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ramadan.notify.R
 import com.ramadan.notify.utils.getRecordLength
@@ -37,6 +37,8 @@ class PlayRecord : DialogFragment(), MediaPlayer.OnErrorListener, MediaPlayer.On
     private var recordName: TextView? = null
     private var recordDuration: TextView? = null
     private var currentProgress: TextView? = null
+    private var mAdView: AdView? = null
+
     private var isPlaying = false
     var minutes: Long = 0
     var seconds: Long = 0
@@ -123,6 +125,40 @@ class PlayRecord : DialogFragment(), MediaPlayer.OnErrorListener, MediaPlayer.On
             onPlay(isPlaying)
             isPlaying = !isPlaying
         }
+        MobileAds.initialize(view.context) {}
+        mAdView = view.findViewById(R.id.adView2)
+        val adRequest = AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build()
+        mAdView!!.loadAd(adRequest)
+
+        mAdView!!.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+
+            }
+
+            override fun onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            override fun onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            override fun onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            override fun onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+
+        }
+
         return alertDialog
     }
 

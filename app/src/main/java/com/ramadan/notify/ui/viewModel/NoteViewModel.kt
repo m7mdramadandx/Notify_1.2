@@ -4,13 +4,11 @@ package com.ramadan.notify.ui.viewModel
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ramadan.notify.data.model.WrittenNote
 import com.ramadan.notify.data.repository.NoteRepository
-import com.ramadan.notify.utils.startLoginActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -88,7 +86,5 @@ class NoteViewModel(private val repository: NoteRepository) : ViewModel() {
         noteListener?.onSuccess()
         return
     }
-
-
 
 }
