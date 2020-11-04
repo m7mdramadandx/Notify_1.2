@@ -1,7 +1,6 @@
 package com.ramadan.notify.utils
 
 import android.R.attr.password
-import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +10,8 @@ import com.ramadan.notify.ui.activity.AppIntro
 import com.ramadan.notify.ui.activity.Login
 import com.ramadan.notify.ui.activity.Note
 import com.ramadan.notify.ui.activity.SignUp
-
+import android.content.Context
+import android.provider.Settings
 
 fun Context.startHomeActivity() =
     Intent(this, MainActivity::class.java).also {
@@ -64,6 +64,14 @@ fun isInternetAvailable(activity: AppCompatActivity): Boolean {
 
 const val emailValidation = "^(.+)@(.+).(.*[a-z])$"
 const val passwordValidation = "(?=.*[0-9])(?=.*[a-z]).{8,}"
+
+fun isTimeAutomatic(context: Context): Boolean {
+    return Settings.Global.getInt(
+        context.contentResolver,
+        Settings.Global.AUTO_TIME,
+        0
+    ) == 1;
+}
 
 
 

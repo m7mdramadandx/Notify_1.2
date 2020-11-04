@@ -79,6 +79,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             ads:adSize="SMART_BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id" />
+            ads:adUnitId="@string/playback_banner_id" />
 
 </LinearLayout>

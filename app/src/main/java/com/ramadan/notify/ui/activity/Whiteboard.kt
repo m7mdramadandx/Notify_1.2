@@ -244,7 +244,6 @@ class Whiteboard : AppCompatActivity(), NoteListener {
     }
 
     override fun onSuccess() {
-        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
         startHomeActivity()
     }
 

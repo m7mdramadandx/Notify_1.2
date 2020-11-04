@@ -193,7 +193,7 @@ class Note : AppCompatActivity(), NoteListener, KodeinAware {
     }
 
     override fun onFailure(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
 }

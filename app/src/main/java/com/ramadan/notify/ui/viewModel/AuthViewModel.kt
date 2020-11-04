@@ -1,13 +1,8 @@
 package com.ramadan.notify.ui.viewModel
 
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.GoogleAuthProvider
-import com.ramadan.notify.R
 import com.ramadan.notify.data.repository.UserRepository
 import com.ramadan.notify.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -89,7 +84,7 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
             authListener?.onFailure("Passwords are different")
             return
         }
-        val disposable = repository.register(email!!, password!!)
+        val disposable = repository.signUp(email!!, password!!)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

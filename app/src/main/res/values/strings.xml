@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">Notify</string>
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="banner_ad_unit_id2">ca-app-pub-5169956365910255/6304844898</string>
+    <!--    <string name="playback_banner_id">ca-app-pub-5169956365910255/6583481846</string>-->
+    <string name="playback_banner_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="home_banner_id">ca-app-pub-5169956365910255/7791055062</string>
     <string name="native_advanced_ad_unit_id">ca-app-pub-5169956365910255/9396583108</string>
+    <string name="Interstitial_ad_unit_id2">ca-app-pub-3940256099942544/8691691433</string>
+    <string name="Interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
     <string name="ad_id">ca-app-pub-5169956365910255~6726952079</string>
-
+    <string name="handle_notification_now">noti_now</string>
+    <string name="default_notification_channel_id">default</string>
 
 </resources>

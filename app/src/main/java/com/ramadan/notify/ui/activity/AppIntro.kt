@@ -93,7 +93,6 @@ class AppIntro : AppIntro2() {
             permissions = arrayOf(
                 Manifest.permission.RECORD_AUDIO
             ),
-
             slideNumber = 3,
             required = true
         )
@@ -110,14 +109,9 @@ class AppIntro : AppIntro2() {
     }
 
     override fun onUserDeniedPermission(permissionName: String) {
-        println("Deny")
-        Toast.makeText(this, "MESSAGE", Toast.LENGTH_LONG).show()
 
     }
 
     override fun onUserDisabledPermission(permissionName: String) {
-        println("Don't ask again")
-        Toast.makeText(this, "MMMMM", Toast.LENGTH_LONG).show()
-        // User pressed "Deny" + "Don't ask again" on the permission dialog
     }
 }

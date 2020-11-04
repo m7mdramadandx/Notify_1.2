@@ -2,24 +2,32 @@
 
 package com.ramadan.notify
 
+import android.app.AlarmManager
+import android.app.Notification
+import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Color
+import android.media.RingtoneManager
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.ads.*
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ramadan.notify.ui.activity.*
 import com.ramadan.notify.ui.adapter.ViewPagerAdapter
 import com.ramadan.notify.ui.viewModel.AuthViewModel
 import com.ramadan.notify.ui.viewModel.AuthViewModelFactory
+import com.ramadan.notify.utils.MyNotificationPublisher
+import com.ramadan.notify.utils.NotificationService
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment
 import com.yalantis.contextmenu.lib.MenuObject
 import com.yalantis.contextmenu.lib.MenuParams
@@ -38,9 +46,12 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     private val records: Records = Records()
     private val whiteboards: Whiteboards = Whiteboards()
     private lateinit var contextMenuDialogFragment: ContextMenuDialogFragment
-    lateinit var mAdView: AdView
+    private lateinit var mAdView: AdView
     private lateinit var mInterstitialAd: InterstitialAd
     val TAG = "Adv"
+    val NOTIFICATION_CHANNEL_ID = "10001"
+    private val default_notification_channel_id = "default"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,13 +69,17 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         tabLayout.getTabAt(2)!!.setIcon(R.drawable.whiteboard).contentDescription = "Drawing notes"
         initMenuFragment()
 
-        MobileAds.initialize(this) {}
+        MobileAds.initialize(this, getString(R.string.ad_id))
+//        val testDeviceIds = listOf("33BE2250B43518CCDA7DE426D04EE231")
+//        val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+//        MobileAds.setRequestConfiguration(configuration)
 
         mAdView = findViewById(R.id.adView)
         mAdView.loadAd(AdRequest.Builder().build())
 
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+//        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.adUnitId = getString(R.string.Interstitial_ad_unit_id)
         mInterstitialAd.loadAd(AdRequest.Builder().build())
         mInterstitialAd.adListener = object : AdListener() {
             override fun onAdLoaded() {
@@ -72,52 +87,66 @@ class MainActivity : AppCompatActivity(), KodeinAware {
                 mInterstitialAd.show()
             }
         }
+        Log.e("token ", "" + FirebaseInstanceId.getInstance().token);
+        println(FirebaseInstanceId.getInstance().token)
+        FirebaseMessaging.getInstance().isAutoInitEnabled = true
 
-//        val channel = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            NotificationChannel("App", "Notify", NotificationManager.IMPORTANCE_DEFAULT)
-//            val manager: NotificationManager = getSystemService(NotificationManager::class.java)
-//
-//        } else {
-//            TODO("VERSION.SDK_INT < O")
-//        }
+        FirebaseMessaging.getInstance().subscribeToTopic("App")
 
-
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener
-        { task ->
-            if (!task.isSuccessful) {
-                Log.w("Adv", "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
-            }
-
-            // Get new FCM registration token
-            val token = task.result
-
-            // Log and toast
-            Log.w("Adv", token)
-            Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
-        })
+        //        scheduleNotification(getNotification("5 second delay"), 5000)
 
     }
 
-    fun onNewToken(token: String) {
-        Log.d("Adv", "Refreshed token: $token")
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // FCM registration token to your app server.
-        sendRegistrationToServer(token)
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun sendRegistrationToServer(token: String?) {
-        // TODO: Implement this method to send token to your app server.
-        Log.d("Adv", "sendRegistrationTokenToServer($token)")
+    private fun scheduleNotification(notification: Notification?, delay: Int) {
+        val notificationIntent = Intent(this, MyNotificationPublisher::class.java)
+        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION_ID, 1)
+        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION, notification)
+        val pendingIntent = PendingIntent.getBroadcast(this,
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+        val futureInMillis = SystemClock.elapsedRealtime() + delay
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        alarmManager[AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis] = pendingIntent
     }
 
+    private fun getNotification(content: String): Notification? {
+        val builder = NotificationCompat.Builder(this, default_notification_channel_id)
+            .setContentTitle("Check your notes before shutting your eyes! \uD83D\uDC40")
+//        builder.setContentText(content)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setAutoCancel(true)
+            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+            .setChannelId(NOTIFICATION_CHANNEL_ID)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .setOngoing(true)
+            .setVibrate(LongArray(1000))
+            .setTicker("Notification Listener Service Example");
+
+
+        return builder.build()
+    }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
     }
+
+    override fun onStop() {
+        super.onStop()
+//        startService(Intent(this, NotificationService::class.java))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        startService(Intent(this, NotificationService::class.java))
+        println("Destroy")
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)

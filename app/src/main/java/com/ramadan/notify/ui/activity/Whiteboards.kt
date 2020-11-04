@@ -77,7 +77,7 @@ class Whiteboards : Fragment(), NoteListener {
     }
 
     override fun onFailure(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
 }

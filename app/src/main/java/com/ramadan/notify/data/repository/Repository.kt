@@ -1,24 +1,21 @@
+@file:Suppress("DEPRECATION")
+
 package com.ramadan.notify.data.repository
 
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.iid.FirebaseInstanceId
 import com.ramadan.notify.data.model.WrittenNote
 import io.reactivex.Completable
 
 
 class Repository {
-
-    val RC_SIGN_IN: Int = 1
-    lateinit var mGoogleSignInClient: GoogleSignInClient
-    lateinit var mGoogleSignInOptions: GoogleSignInOptions
 
     private val auth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
@@ -26,17 +23,22 @@ class Repository {
     private val db: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }
+    private val firebaseID: FirebaseInstanceId by lazy {
+        FirebaseInstanceId.getInstance()
+    }
 
     fun logout() = auth.signOut()
 
     fun currentUser() = auth.currentUser
 
     fun login(email: String, password: String) = Completable.create { emitter ->
+        val dataTokens = hashMapOf("token" to firebaseID.token.toString())
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
             if (!emitter.isDisposed) {
-                if (it.isSuccessful)
+                if (it.isSuccessful) {
+                    db.collection("token").document(it.result.user!!.uid).set(dataTokens)
                     emitter.onComplete()
-                else {
+                } else {
                     emitter.onError(it.exception!!)
                 }
             }
@@ -44,25 +46,31 @@ class Repository {
     }
 
     fun loginWithGoogle(acct: GoogleSignInAccount) = Completable.create { emitter ->
+        val data = hashMapOf("email" to acct.email)
+        val dataTokens = hashMapOf("token" to firebaseID.token.toString())
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener {
             if (!emitter.isDisposed) {
-                if (it.isSuccessful)
+                if (it.isSuccessful) {
+                    db.collection("user").document(it.result.user!!.uid).set(data)
+                    db.collection("token").document(it.result.user!!.uid).set(dataTokens)
                     emitter.onComplete()
-                else {
+                } else {
                     emitter.onError(it.exception!!)
                 }
             }
         }
     }
 
-    fun register(email: String, password: String) = Completable.create { emitter ->
+    fun signUp(email: String, password: String) = Completable.create { emitter ->
         val data = hashMapOf("email" to email, "password" to password)
+        val dataTokens = hashMapOf("token" to firebaseID.token.toString())
+
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
             if (!emitter.isDisposed) {
                 if (it.isSuccessful) {
-                    val userID = auth.currentUser?.uid
-                    db.collection("user").document(userID!!).set(data)
+                    db.collection("user").document(it.result.user!!.uid).set(data)
+                    db.collection("token").document(it.result.user!!.uid).set(dataTokens)
                     emitter.onComplete()
                 } else
                     emitter.onError(it.exception!!)

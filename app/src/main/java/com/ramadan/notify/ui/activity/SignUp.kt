@@ -51,8 +51,7 @@ class SignUp : AppCompatActivity(), AuthListener, KodeinAware {
 
     override fun onFailure(message: String) {
         progressBar.visibility = View.GONE
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-        Log.e("Sign Up Failure", message)
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
 

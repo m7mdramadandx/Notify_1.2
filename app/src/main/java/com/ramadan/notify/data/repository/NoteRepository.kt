@@ -22,8 +22,4 @@ class NoteRepository(private val repository: Repository) {
         return mutableData
     }
 
-    fun currentUser() = repository.currentUser()
-
-    fun logout() = repository.logout()
-
 }
