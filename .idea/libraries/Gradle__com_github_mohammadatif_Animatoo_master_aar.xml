@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.mohammadatif:Animatoo:master@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/97f9387949604d0119e6377f83550a35/jetified-Animatoo-master/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/97f9387949604d0119e6377f83550a35/jetified-Animatoo-master/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/97f9387949604d0119e6377f83550a35/jetified-Animatoo-master/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb56fe4c998eab293765ab1796992fbc/jetified-Animatoo-master/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb56fe4c998eab293765ab1796992fbc/jetified-Animatoo-master/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb56fe4c998eab293765ab1796992fbc/jetified-Animatoo-master/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

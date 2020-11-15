@@ -7,7 +7,7 @@
     <string name="Interstitial_ad_unit_id2">ca-app-pub-3940256099942544/8691691433</string>
     <string name="Interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
     <string name="ad_id">ca-app-pub-5169956365910255~6726952079</string>
-    <string name="handle_notification_now">noti_now</string>
-    <string name="default_notification_channel_id">default</string>
-
+    <string name="channel_id">MyDefaultChannelID</string>
+    <string name="channel_name">MyDefaultChannelName</string>
+    <string name="channel_description">MyDefaultChannelDescription</string>
 </resources>

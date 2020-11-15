@@ -2,20 +2,13 @@
 
 package com.ramadan.notify
 
-import android.app.AlarmManager
-import android.app.Notification
-import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Color
-import android.media.RingtoneManager
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.ads.*
@@ -26,8 +19,6 @@ import com.ramadan.notify.ui.activity.*
 import com.ramadan.notify.ui.adapter.ViewPagerAdapter
 import com.ramadan.notify.ui.viewModel.AuthViewModel
 import com.ramadan.notify.ui.viewModel.AuthViewModelFactory
-import com.ramadan.notify.utils.MyNotificationPublisher
-import com.ramadan.notify.utils.NotificationService
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment
 import com.yalantis.contextmenu.lib.MenuObject
 import com.yalantis.contextmenu.lib.MenuParams
@@ -48,10 +39,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     private lateinit var contextMenuDialogFragment: ContextMenuDialogFragment
     private lateinit var mAdView: AdView
     private lateinit var mInterstitialAd: InterstitialAd
-    val TAG = "Adv"
-    val NOTIFICATION_CHANNEL_ID = "10001"
-    private val default_notification_channel_id = "default"
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,63 +75,17 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             }
         }
         Log.e("token ", "" + FirebaseInstanceId.getInstance().token);
-        println(FirebaseInstanceId.getInstance().token)
         FirebaseMessaging.getInstance().isAutoInitEnabled = true
 
-        FirebaseMessaging.getInstance().subscribeToTopic("App")
+        FirebaseMessaging.getInstance().subscribeToTopic("allUsers")
 
-        //        scheduleNotification(getNotification("5 second delay"), 5000)
 
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun scheduleNotification(notification: Notification?, delay: Int) {
-        val notificationIntent = Intent(this, MyNotificationPublisher::class.java)
-        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION_ID, 1)
-        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION, notification)
-        val pendingIntent = PendingIntent.getBroadcast(this,
-            0,
-            notificationIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
-        val futureInMillis = SystemClock.elapsedRealtime() + delay
-        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-        alarmManager[AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis] = pendingIntent
-    }
-
-    private fun getNotification(content: String): Notification? {
-        val builder = NotificationCompat.Builder(this, default_notification_channel_id)
-            .setContentTitle("Check your notes before shutting your eyes! \uD83D\uDC40")
-//        builder.setContentText(content)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
-            .setAutoCancel(true)
-            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            .setChannelId(NOTIFICATION_CHANNEL_ID)
-            .setCategory(Notification.CATEGORY_SERVICE)
-            .setOngoing(true)
-            .setVibrate(LongArray(1000))
-            .setTicker("Notification Listener Service Example");
-
-
-        return builder.build()
-    }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        startService(Intent(this, NotificationService::class.java))
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//        startService(Intent(this, NotificationService::class.java))
-        println("Destroy")
     }
 
 
