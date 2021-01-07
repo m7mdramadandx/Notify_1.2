@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alert_msg">Would you like to save changes?</string>
+</resources>
