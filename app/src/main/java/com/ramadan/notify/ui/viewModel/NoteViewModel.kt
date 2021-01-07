@@ -3,87 +3,70 @@
 package com.ramadan.notify.ui.viewModel
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ramadan.notify.data.model.WrittenNote
+import com.ramadan.notify.data.model.NoteTable
 import com.ramadan.notify.data.repository.NoteRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class NoteViewModel(private val repository: NoteRepository) : ViewModel() {
+class NoteViewModel : ViewModel() {
     @SuppressLint("SimpleDateFormat")
     private val currentDate = SimpleDateFormat("dd/MM/yyyy")
     private val todayDate = Date()
-    private var ID: String? = System.currentTimeMillis().toString()
     var date: String? = currentDate.format(todayDate)
     var name: String? = null
     var content: String? = null
-    var noteColor: Int? = Color.parseColor("#ffffff")
+    var color: Int? = Color.parseColor("#ffffff")
     var noteListener: NoteListener? = null
 
-    fun retrieveNotes(): LiveData<MutableList<WrittenNote>> {
-        val mutableData = MutableLiveData<MutableList<WrittenNote>>()
-        repository.fetchNotes().observeForever { mutableData.value = it }
-        return mutableData
-    }
-
-    fun getNote(ID: String): MutableLiveData<WrittenNote> {
-        val mutableData = MutableLiveData<WrittenNote>()
-        repository.fetchNote(ID).observeForever {
-            mutableData.value = it
-            this.ID = it.ID
-            name = it.name
-            date = it.date
-            content = it.content
-            noteColor = it.noteColor
-        }
-        return mutableData
-    }
-
-    fun insertNote() {
+    fun insertNote(context: Context) {
         if (content.isNullOrEmpty()) {
             noteListener?.onFailure("No content to save")
             return
         }
-        if (name.isNullOrEmpty())
-            name = ""
-        val note: HashMap<String, Any?> = hashMapOf(
-            "noteID" to ID,
-            "noteDate" to date,
-            "noteName" to name,
-            "noteContent" to content,
-            "noteColor" to noteColor
-        )
-        repository.insertNote(note)
+        if (name.isNullOrEmpty()) name = ""
+        val note = NoteTable(date = date!!, name = name!!, content = content!!, color = color!!)
+        NoteRepository.insertNote(context, note)
         noteListener?.onSuccess()
         return
     }
 
-    fun updateNote() {
-        if (name.isNullOrEmpty())
-            name = ""
-        val note: HashMap<String, Any?> = hashMapOf(
-            "noteID" to ID,
-            "noteDate" to currentDate.format(todayDate),
-            "noteName" to name,
-            "noteContent" to content,
-            "noteColor" to noteColor
-        )
-        repository.updateNote(note)
+    fun updateNote(context: Context, ID: Int) {
+        if (content.isNullOrEmpty()) {
+            noteListener?.onFailure("No content to save")
+            return
+        }
+        if (name.isNullOrEmpty()) name = ""
+        val note = NoteTable(ID, date!!, name!!, content!!, color!!)
+        NoteRepository.updateNote(context, note)
         noteListener?.onSuccess()
         return
     }
 
-    fun deleteNote() {
+    fun retrieveNotes(context: Context): LiveData<MutableList<NoteTable>> =
+        NoteRepository.retrieveNotes(context)
+
+    fun getNote(context: Context, ID: Int): LiveData<NoteTable> {
+        val liveData: LiveData<NoteTable> = NoteRepository.getNote(context, ID)
+        liveData.observeForever {
+            date = it.date
+            name = it.name
+            content = it.content
+            color = it.color
+        }
+        return liveData
+    }
+
+    fun delete(context: Context, note: NoteTable) {
         if (content.isNullOrEmpty()) {
             noteListener?.onFailure("No content to delete")
             return
         }
-        repository.deleteNote(ID!!)
-        noteListener?.onSuccess()
+        NoteRepository.deleteNote(context, note)
         return
     }
 

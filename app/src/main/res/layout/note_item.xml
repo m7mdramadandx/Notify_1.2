@@ -6,7 +6,7 @@
 
         <variable
                 name="noteItem"
-                type="com.ramadan.notify.data.model.WrittenNote" />
+                type="com.ramadan.notify.data.model.NoteTable" />
 
     </data>
 

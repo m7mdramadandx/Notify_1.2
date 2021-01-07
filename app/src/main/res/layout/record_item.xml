@@ -17,7 +17,7 @@
         <ImageView
                 android:id="@+id/recordImg"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="160dp"
                 android:adjustViewBounds="true"
                 android:background="@color/colorBackground"
                 android:scaleType="fitCenter"
@@ -46,7 +46,6 @@
                     android:text="Record name"
                     android:textAlignment="center"
                     android:textSize="16sp"
-                    android:textStyle="bold"
                     card_view:layout_constraintEnd_toEndOf="parent"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintTop_toTopOf="parent" />

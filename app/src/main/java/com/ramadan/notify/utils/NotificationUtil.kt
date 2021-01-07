@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
@@ -23,7 +22,6 @@ class NotificationUtil(private val context: Context) {
 
     fun showNotification(title: String, message: String, imageUrl: Uri) {
 
-        println("")
         val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUrl)
         val intent = Intent(context, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -31,21 +29,8 @@ class NotificationUtil(private val context: Context) {
             context, 0, intent,
             PendingIntent.FLAG_ONE_SHOT
         )
-        val random = (0..9).random()
-        val drawables = intArrayOf(
-            R.drawable.n1, R.drawable.n2, R.drawable.n3, R.drawable.n4,
-            R.drawable.n5, R.drawable.n6, R.drawable.n7,
-            R.drawable.n8, R.drawable.n9, R.drawable.n10)
-
-        val icon = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_foreground)
-        val welcomeIcon = BitmapFactory.decodeResource(context.resources, R.drawable.welcome)
-        val morningIcon = BitmapFactory.decodeResource(context.resources, R.drawable.morning)
-        val midnightIcon = BitmapFactory.decodeResource(context.resources, R.drawable.midnight)
-        val defaultIcon = BitmapFactory.decodeResource(context.resources, drawables[random])
-
 
         val notificationBuilder: NotificationCompat.Builder?
-        println("66")
         notificationBuilder = NotificationCompat.Builder(context, "1001")
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentTitle(title)
@@ -64,37 +49,6 @@ class NotificationUtil(private val context: Context) {
                 .bigPicture(bitmap)
                 .bigLargeIcon(null))
 
-//        when {
-//            title.contains("night") -> {
-//                notificationBuilder
-//                    .setLargeIcon(midnightIcon)
-//                    .setStyle(NotificationCompat.BigPictureStyle()
-//                        .bigPicture(midnightIcon)
-//                        .bigLargeIcon(null))
-//            }
-//            title.contains("morning") -> {
-//                notificationBuilder
-//                    .setLargeIcon(morningIcon)
-//                    .setStyle(NotificationCompat.BigPictureStyle()
-//                        .bigPicture(morningIcon)
-//                        .bigLargeIcon(null))
-//            }
-//            title.contains("hello") -> {
-//                notificationBuilder
-//                    .setLargeIcon(welcomeIcon)
-//                    .setStyle(NotificationCompat.BigPictureStyle()
-//                        .bigPicture(welcomeIcon)
-//                        .bigLargeIcon(null))
-//            }
-//            else -> {
-//                notificationBuilder
-//                    .setLargeIcon(defaultIcon)
-//                    .setStyle(NotificationCompat.BigPictureStyle()
-//                        .bigPicture(defaultIcon)
-//                        .bigLargeIcon(defaultIcon)
-//                        .setSummaryText(message))
-//            }
-//        }
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 

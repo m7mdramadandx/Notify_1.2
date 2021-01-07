@@ -7,6 +7,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7d89fc721fd9d779190a816238cb22e9/jetified-Context-Menu.Android-1.1.4/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7d89fc721fd9d779190a816238cb22e9/jetified-Context-Menu.Android-1.1.4/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7d89fc721fd9d779190a816238cb22e9/jetified-Context-Menu.Android-1.1.4/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/76e8ba8130a90993262e58cde4d16fb4/jetified-Context-Menu.Android-1.1.4/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/76e8ba8130a90993262e58cde4d16fb4/jetified-Context-Menu.Android-1.1.4/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/76e8ba8130a90993262e58cde4d16fb4/jetified-Context-Menu.Android-1.1.4/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

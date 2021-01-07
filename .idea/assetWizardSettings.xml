@@ -344,8 +344,8 @@
                           <map>
                             <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="night_theme" />
-                            <entry key="sourceFile" value="C:\Users\mhmdr\Downloads\iconfinder_night-01_1221021.svg" />
+                            <entry key="outputName" value="board" />
+                            <entry key="sourceFile" value="C:\Users\mhmdr\Downloads\blackboard.svg" />
                           </map>
                         </option>
                       </PersistentState>

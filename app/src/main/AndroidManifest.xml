@@ -14,7 +14,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-            android:name=".NotifyApplication"
             android:allowBackup="true"
             android:allowClearUserData="false"
             android:appCategory="social"
@@ -61,13 +60,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-                android:name=".ui.activity.Login"
-                android:hardwareAccelerated="false" />
-        <activity
-                android:name=".ui.activity.SignUp"
-                android:hardwareAccelerated="false" />
-        <activity android:name=".MainActivity" />
+
         <activity
                 android:name=".ui.activity.Record"
                 android:hardwareAccelerated="false" />
@@ -80,6 +73,7 @@
         <activity
                 android:name=".ui.activity.AppIntro"
                 android:hardwareAccelerated="false" />
+        <activity android:name=".MainActivity" />
 
 
     </application>

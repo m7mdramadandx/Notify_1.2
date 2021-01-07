@@ -15,23 +15,21 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ramadan.notify.R
-import com.ramadan.notify.data.model.WrittenNote
+import com.ramadan.notify.data.model.NoteTable
 import com.ramadan.notify.data.repository.NoteRepository
-import com.ramadan.notify.data.repository.Repository
 import com.ramadan.notify.databinding.NoteItemBinding
 import com.ramadan.notify.ui.activity.Note
 import com.ramadan.notify.ui.activity.Notes
-import com.ramadan.notify.utils.startHomeActivity
 import com.ramadan.notify.utils.startNoteActivity
 
 
 class NoteAdapter(val context: Notes) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var dataList = mutableListOf<WrittenNote>()
+    private var dataList = mutableListOf<NoteTable>()
     private val viewNote = 0
     private val addNote = 1
 
-    fun setDataList(data: MutableList<WrittenNote>) {
+    fun setDataList(data: MutableList<NoteTable>) {
         dataList = data
         notifyDataSetChanged()
     }
@@ -74,7 +72,7 @@ class NoteAdapter(val context: Notes) :
                 }
             }
             else -> {
-                val writtenNote: WrittenNote = dataList[position - 1]
+                val writtenNote: NoteTable = dataList[position - 1]
                 (holder as ViewNoteViewHolder).bind(writtenNote)
 
 
@@ -127,22 +125,18 @@ class NoteAdapter(val context: Notes) :
     class ViewNoteViewHolder(private var binding: NoteItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         private val mContext: Context = itemView.context
-        fun bind(writtenNote: WrittenNote) {
-            binding.noteItem = writtenNote
-
-            binding.note.setCardBackgroundColor(writtenNote.noteColor)
+        fun bind(note: NoteTable) {
+            binding.noteItem = note
+            binding.note.setCardBackgroundColor(note.color)
             binding.executePendingBindings()
-            itemView.setOnClickListener {
-                it.context.startNoteActivity(writtenNote)
-            }
-
+            itemView.setOnClickListener { it.context.startNoteActivity(note) }
             itemView.setOnLongClickListener {
-                showOption(writtenNote)
+                showOption(note)
                 false
             }
         }
 
-        private fun showOption(writtenNote: WrittenNote) {
+        private fun showOption(note: NoteTable) {
             val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(mContext)
             val view = View.inflate(mContext, R.layout.option_dialog, null)
             dialogBuilder.setView(view)
@@ -155,14 +149,13 @@ class NoteAdapter(val context: Notes) :
             rename.visibility = GONE
             val delete = view.findViewById<TextView>(R.id.delete)
             share.setOnClickListener {
-                shareNote(writtenNote.content)
+                shareNote(note.content)
                 alertDialog.cancel()
             }
             delete.setOnClickListener {
-                NoteRepository(Repository()).deleteNote(writtenNote.ID)
+                NoteRepository.deleteNote(mContext, note)
                 Toast.makeText(mContext, "Deleted", Toast.LENGTH_SHORT).show()
                 alertDialog.cancel()
-                mContext.startHomeActivity()
             }
         }
 

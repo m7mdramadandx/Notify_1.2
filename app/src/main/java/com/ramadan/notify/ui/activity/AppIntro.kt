@@ -4,14 +4,13 @@ package com.ramadan.notify.ui.activity
 import android.Manifest
 import android.os.Bundle
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.appintro.AppIntro2
 import com.github.appintro.AppIntroFragment
 import com.github.appintro.AppIntroPageTransformerType
 import com.github.appintro.model.SliderPage
 import com.ramadan.notify.R
-import com.ramadan.notify.utils.startLoginActivity
+import com.ramadan.notify.utils.startHomeActivity
 
 class AppIntro : AppIntro2() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,7 +104,7 @@ class AppIntro : AppIntro2() {
 
     public override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
-        startLoginActivity()
+        startHomeActivity()
     }
 
     override fun onUserDeniedPermission(permissionName: String) {

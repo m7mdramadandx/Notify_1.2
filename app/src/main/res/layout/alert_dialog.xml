@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginVertical="10dp"
-                    android:text="Do you like to save changes?"
+                    android:text="@string/alert_msg"
                     android:textAlignment="center" />
 
             <LinearLayout

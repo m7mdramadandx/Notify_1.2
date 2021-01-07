@@ -46,9 +46,7 @@ class PlayRecord : DialogFragment(), MediaPlayer.OnErrorListener, MediaPlayer.On
 
     fun newInstance(mFile: File?): PlayRecord? {
         val dialog: PlayRecord = PlayRecord()
-        val args = Bundle().apply {
-            mFile?.let { putString("record", it.path) }
-        }
+        val args = Bundle().apply { mFile?.let { putString("record", it.path) } }
         dialog.arguments = args
         println(mFile?.extension)
         return dialog
@@ -95,28 +93,19 @@ class PlayRecord : DialogFragment(), MediaPlayer.OnErrorListener, MediaPlayer.On
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
-                if (mMediaPlayer != null) {
-                    mHandler.removeCallbacks(mRunnable)
-                }
+                if (mMediaPlayer != null) mHandler.removeCallbacks(mRunnable)
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 if (mMediaPlayer != null) {
                     mHandler.removeCallbacks(mRunnable)
                     mMediaPlayer!!.seekTo(seekBar.progress)
-                    val minutes = TimeUnit.MILLISECONDS.toMinutes(
-                        mMediaPlayer!!.currentPosition.toLong()
-                    )
+                    val minutes =
+                        TimeUnit.MILLISECONDS.toMinutes(mMediaPlayer!!.currentPosition.toLong())
                     val seconds =
-                        (TimeUnit.MILLISECONDS.toSeconds(
-                            mMediaPlayer!!.currentPosition.toLong()
-                        )
+                        (TimeUnit.MILLISECONDS.toSeconds(mMediaPlayer!!.currentPosition.toLong())
                                 - TimeUnit.MINUTES.toSeconds(minutes))
-                    currentProgress!!.text = String.format(
-                        "%02d:%02d",
-                        minutes,
-                        seconds
-                    )
+                    currentProgress!!.text = String.format("%02d:%02d", minutes, seconds)
                     updateSeekBar()
                 }
             }
@@ -164,29 +153,23 @@ class PlayRecord : DialogFragment(), MediaPlayer.OnErrorListener, MediaPlayer.On
 
     override fun onPause() {
         super.onPause()
-        if (mMediaPlayer != null)
-            mMediaPlayer!!.pause()
+        if (mMediaPlayer != null) mMediaPlayer!!.pause()
     }
 
     override fun onResume() {
         super.onResume()
-        if (mMediaPlayer != null)
-            startPlaying()
+        if (mMediaPlayer != null) startPlaying()
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
-        if (mMediaPlayer != null)
-            mMediaPlayer!!.stop()
+        if (mMediaPlayer != null) mMediaPlayer!!.stop()
     }
 
     override fun onStop() {
         super.onStop()
-        if (mMediaPlayer != null)
-            mMediaPlayer!!.stop()
+        if (mMediaPlayer != null) mMediaPlayer!!.stop()
     }
-
 
     private fun prepareMediaPlayerFromPoint(progress: Int) {
         mMediaPlayer = MediaPlayer.create(context, Uri.fromFile(file))
@@ -208,10 +191,8 @@ class PlayRecord : DialogFragment(), MediaPlayer.OnErrorListener, MediaPlayer.On
 
     private fun onPlay(isPlaying: Boolean) {
         if (!isPlaying) {
-            if (mMediaPlayer == null)
-                startPlaying()
-            else
-                resumePlaying()
+            if (mMediaPlayer == null) startPlaying()
+            else resumePlaying()
         } else {
             pausePlaying()
         }
@@ -237,7 +218,6 @@ class PlayRecord : DialogFragment(), MediaPlayer.OnErrorListener, MediaPlayer.On
         updateSeekBar()
     }
 
-
     private fun pausePlaying() {
         playPause?.setImageResource(R.drawable.play)
         mHandler.removeCallbacks(mRunnable)
@@ -258,11 +238,9 @@ class PlayRecord : DialogFragment(), MediaPlayer.OnErrorListener, MediaPlayer.On
         mMediaPlayer!!.reset()
         mMediaPlayer!!.release()
         mMediaPlayer = null
-
         isPlaying = !isPlaying
         seekBar!!.progress = 0
         currentProgress!!.text = "00:00"
-
         activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
@@ -288,9 +266,7 @@ class PlayRecord : DialogFragment(), MediaPlayer.OnErrorListener, MediaPlayer.On
         mHandler.postDelayed(mRunnable, 1000)
     }
 
-    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-        return false
-    }
+    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean = false
 
     override fun onPrepared(mp: MediaPlayer?) {
         mMediaPlayer?.start()

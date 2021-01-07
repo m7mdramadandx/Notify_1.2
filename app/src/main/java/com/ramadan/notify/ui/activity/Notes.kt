@@ -15,20 +15,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ramadan.notify.R
 import com.ramadan.notify.ui.adapter.NoteAdapter
 import com.ramadan.notify.ui.viewModel.NoteViewModel
-import com.ramadan.notify.ui.viewModel.NoteViewModelFactory
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.kodein
-import org.kodein.di.generic.instance
 
 
-class Notes : Fragment(), KodeinAware {
-    override val kodein by kodein()
-    private val factory: NoteViewModelFactory by instance()
-    private val viewModel by lazy {
-        ViewModelProviders.of(this, factory).get(NoteViewModel::class.java)
-    }
+class Notes : Fragment() {
+    private val viewModel by lazy { ViewModelProviders.of(this).get(NoteViewModel::class.java) }
     private lateinit var adapter: NoteAdapter
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,9 +41,8 @@ class Notes : Fragment(), KodeinAware {
     }
 
     private fun observeData() {
-        viewModel.retrieveNotes().observe(viewLifecycleOwner, Observer {
-            adapter.setDataList(it)
-        })
+        viewModel.retrieveNotes(context!!)
+            .observe(viewLifecycleOwner, Observer(adapter::setDataList))
     }
 
 }

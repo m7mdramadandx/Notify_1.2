@@ -14,7 +14,7 @@
             android:id="@+id/noteLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@{noteModel.noteColor}"
+            android:background="@{noteModel.color}"
             android:orientation="vertical"
             android:paddingHorizontal="6dp">
 
