@@ -95,7 +95,6 @@ class MainActivity : AppCompatActivity() {
             menuObjects = getMenuObjects(),
             isClosableOutside = true
         )
-
         contextMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams).apply {
             menuItemClickListener = { view, position ->
                 when (position) {

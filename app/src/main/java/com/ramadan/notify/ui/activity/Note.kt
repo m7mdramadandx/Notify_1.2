@@ -42,7 +42,6 @@ class Note : AppCompatActivity(), NoteListener {
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(viewModel.color!!))
-        initLoadingDialog()
         noteColorPicker.setListener { position, color ->
             noteLayout.setBackgroundColor(color)
             viewModel.color = color
@@ -89,15 +88,6 @@ class Note : AppCompatActivity(), NoteListener {
             super.onBackPressed()
         }
     }
-
-    private fun initLoadingDialog() {
-        val dialogBuilder = AlertDialog.Builder(this)
-        val layoutView = layoutInflater.inflate(R.layout.loading_dialog, null)
-        dialogBuilder.setView(layoutView)
-        loadingDialog = dialogBuilder.create()
-        loadingDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    }
-
     private fun observeDate(id: Int) {
         viewModel.getNote(applicationContext, id).observe(this, Observer {
             supportActionBar?.setBackgroundDrawable(ColorDrawable(it.color))
