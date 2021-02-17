@@ -5,6 +5,5 @@
     <string name="home_banner_id">ca-app-pub-5169956365910255/7791055062</string>
     <string name="Interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
     <string name="ad_id">ca-app-pub-5169956365910255~6726952079</string>
-    <string name="channel_id">MyDefaultChannelID</string>
     <string name="alert_msg">Would you like to save changes?</string>
 </resources>

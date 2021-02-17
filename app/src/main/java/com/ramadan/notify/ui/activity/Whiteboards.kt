@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.ramadan.notify.ui.activity
 
 import android.app.AlertDialog
@@ -11,22 +9,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ramadan.notify.R
 import com.ramadan.notify.ui.adapter.WhiteboardAdapter
 import com.ramadan.notify.ui.viewModel.HomeViewModel
 import com.ramadan.notify.ui.viewModel.NoteListener
 
 class Whiteboards : Fragment(), NoteListener {
-    private val viewModel by lazy {
-        ViewModelProviders.of(this).get(HomeViewModel::class.java)
-    }
+    private val viewModel by lazy { ViewModelProvider(this).get(HomeViewModel::class.java) }
     private var adapter: WhiteboardAdapter? = null
 
     override fun onCreateView(
@@ -37,8 +34,19 @@ class Whiteboards : Fragment(), NoteListener {
         val recyclerView: RecyclerView = view.findViewById(R.id.dashboardRecycleView)
         viewModel.noteListener = this
         observeData()
-        recyclerView.layoutManager = GridLayoutManager(view.context, 2)
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+        recyclerView.layoutManager = staggeredGridLayoutManager
         recyclerView.adapter = adapter
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    (activity as AppCompatActivity).supportActionBar?.hide()
+                } else {
+                    (activity as AppCompatActivity).supportActionBar?.show()
+                }
+            }
+        })
         return view
     }
 
@@ -48,10 +56,6 @@ class Whiteboards : Fragment(), NoteListener {
         dialogBuilder.setView(view)
         val alertDialog = dialogBuilder.create()
         alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        alertDialog.window!!.setLayout(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT
-        )
         alertDialog.window!!.attributes.windowAnimations = R.style.ShrinkAnimation
         alertDialog.setCancelable(true)
         val imageView = view.findViewById<ImageView>(R.id.img)
@@ -68,13 +72,9 @@ class Whiteboards : Fragment(), NoteListener {
         adapter = WhiteboardAdapter(viewModel.retrieveWhiteboards())
     }
 
-    override fun onStarted() {
-        TODO("Not yet implemented")
-    }
+    override fun onStarted() {}
 
-    override fun onSuccess() {
-        TODO("Not yet implemented")
-    }
+    override fun onSuccess() {}
 
     override fun onFailure(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()

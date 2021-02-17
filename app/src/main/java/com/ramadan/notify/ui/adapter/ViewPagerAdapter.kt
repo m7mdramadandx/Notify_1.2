@@ -5,10 +5,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import java.util.*
 
-
 class ViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentPagerAdapter(fm, behavior) {
     private val fragments: ArrayList<Fragment> = ArrayList()
-
 
     fun addFragment(fragment: Fragment) {
         fragments.add(fragment)
@@ -18,13 +16,6 @@ class ViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentPagerAdapte
         return fragments[position]
     }
 
-    override fun getCount(): Int {
-        return fragments.size
-    }
-
-    override fun notifyDataSetChanged() {
-        super.notifyDataSetChanged()
-        println("notifyDataSetChanged")
-    }
+    override fun getCount(): Int = fragments.size
 
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -16,10 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="4dp"
-            android:minHeight="140dp"
-            card_view:cardCornerRadius="15dp"
-            card_view:cardPreventCornerOverlap="false"
-            card_view:cardUseCompatPadding="true">
+            android:minHeight="140dp">
 
         <LinearLayout
                 android:id="@+id/noteLayout"
@@ -33,9 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
-                    android:layoutDirection="inherit"
                     android:text="@{noteItem.name}"
-                    android:textAlignment="inherit"
                     android:textColor="@color/colorPrimary"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -44,7 +38,7 @@
                     android:id="@+id/content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/comfortaa"
+                    android:fontFamily="@font/comfortaa_family"
                     android:minHeight="140dp"
                     android:text="@{noteItem.content}"
                     android:textAlignment="inherit"

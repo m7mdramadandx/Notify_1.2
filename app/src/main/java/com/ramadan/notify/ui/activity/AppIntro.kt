@@ -16,7 +16,6 @@ class AppIntro : AppIntro2() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        window!!.navigationBarColor = getColor(R.color.transparent)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -27,9 +26,8 @@ class AppIntro : AppIntro2() {
                 SliderPage(
                     "Colorful Notes",
                     imageDrawable = R.drawable.notes,
-                    titleTypefaceFontRes = R.font.comfortaa,
+                    titleTypefaceFontRes = R.font.comfortaa_family,
                     backgroundColor = getColor(R.color.colorAccent)
-
                 )
             )
         )
@@ -37,8 +35,7 @@ class AppIntro : AppIntro2() {
             AppIntroFragment.newInstance(
                 "Portable drawing board",
                 "White and Black Boards",
-                titleTypefaceFontRes = R.font.comfortaa,
-
+                titleTypefaceFontRes = R.font.comfortaa_family,
                 imageDrawable = R.drawable.drawing,
                 backgroundColor = getColor(R.color.colorAccent)
             )
@@ -50,10 +47,8 @@ class AppIntro : AppIntro2() {
                     "Record and Listen",
                     " ",
                     imageDrawable = R.drawable.recording,
-                    titleTypefaceFontRes = R.font.comfortaa,
-
+                    titleTypefaceFontRes = R.font.comfortaa_family,
                     backgroundColor = getColor(R.color.colorAccent)
-
                 )
             )
         )
@@ -63,8 +58,7 @@ class AppIntro : AppIntro2() {
                 "Day and Night Theme",
                 " ",
                 imageDrawable = R.drawable.daynight,
-                titleTypefaceFontRes = R.font.comfortaa,
-
+                titleTypefaceFontRes = R.font.comfortaa_family,
                 backgroundColor = getColor(R.color.colorPrimary)
             )
         )

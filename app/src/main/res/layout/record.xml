@@ -18,7 +18,7 @@
 
     <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/recordProgressBar"
-            style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Indeterminate"
+            style="@style/Widget.MaterialComponents.CircularProgressIndicator"
             android:layout_width="220dp"
             android:layout_height="220dp"
             android:indeterminate="false"
@@ -33,12 +33,12 @@
 
 
     <com.devlomi.record_view.RecordView
-            android:layout_margin="8dp"
             android:id="@+id/recordView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:layout_weight="9"
-            android:background="@color/transparent"
+            android:background="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/recordButton"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,9 +50,9 @@
 
     <com.devlomi.record_view.RecordButton
             android:id="@+id/recordButton"
-            android:layout_margin="8dp"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:background="@drawable/record_background"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"

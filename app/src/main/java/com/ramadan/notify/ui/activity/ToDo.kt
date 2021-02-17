@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.ramadan.notify.ui.activity
 
 import android.app.AlertDialog
@@ -12,19 +10,13 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.ramadan.notify.R
 import com.ramadan.notify.ui.viewModel.ToDoViewModel
 
 
 class ToDo : DialogFragment() {
-
-    private val viewModel by lazy { ViewModelProviders.of(this).get(ToDoViewModel::class.java) }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val viewModel by lazy { ViewModelProvider(this).get(ToDoViewModel::class.java) }
 
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -44,8 +36,6 @@ class ToDo : DialogFragment() {
             alertDialog.cancel()
         }
         cancel.setOnClickListener { alertDialog.cancel() }
-
-
         return alertDialog
     }
 

@@ -19,12 +19,10 @@ import com.ramadan.notify.data.model.NoteTable
 import com.ramadan.notify.data.repository.NoteRepository
 import com.ramadan.notify.databinding.NoteItemBinding
 import com.ramadan.notify.ui.activity.Note
-import com.ramadan.notify.ui.activity.Notes
 import com.ramadan.notify.utils.startNoteActivity
 
 
-class NoteAdapter(val context: Notes) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NoteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var dataList = mutableListOf<NoteTable>()
     private val viewNote = 0
     private val addNote = 1
@@ -57,11 +55,7 @@ class NoteAdapter(val context: Notes) :
 
 
     override fun getItemCount(): Int {
-        return if (dataList.isNotEmpty()) {
-            dataList.size + 1
-        } else {
-            1
-        }
+        return if (dataList.isNotEmpty()) dataList.size + 1 else 1
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -75,8 +69,6 @@ class NoteAdapter(val context: Notes) :
                 val writtenNote: NoteTable = dataList[position - 1]
                 (holder as ViewNoteViewHolder).bind(writtenNote)
 
-
-//
 //                populateNativeAdView(nativeAd, holder.adView)
 
 //                MobileAds.initialize(holder.mContext) {}

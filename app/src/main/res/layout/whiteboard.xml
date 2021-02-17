@@ -11,7 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
-            android:background="@android:color/white"
+            android:background="@color/white_black"
             app:layout_constraintBottom_toTopOf="@+id/seekBar"
             app:layout_constraintCircleRadius="140dp"
             app:layout_constraintEnd_toEndOf="parent"

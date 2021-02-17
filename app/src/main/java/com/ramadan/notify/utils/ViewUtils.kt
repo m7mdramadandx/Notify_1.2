@@ -2,6 +2,7 @@ package com.ramadan.notify.utils
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import com.ramadan.notify.MainActivity
 import com.ramadan.notify.data.model.NoteTable
 import com.ramadan.notify.ui.activity.AppIntro
@@ -36,7 +37,12 @@ fun getRecordLength(milliseconds: Long): String {
                     )
                 )
     )
+
 }
+
+val menuItemColor = Color.rgb(238, 238, 238)
+const val DEBUG_TAG = "TOTO"
+
 
 
 

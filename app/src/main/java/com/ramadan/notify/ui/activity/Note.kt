@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.ramadan.notify.ui.activity
 
 import android.app.AlertDialog
@@ -12,13 +10,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.ramadan.notify.R
 import com.ramadan.notify.data.model.NoteTable
 import com.ramadan.notify.databinding.NoteBinding
 import com.ramadan.notify.ui.viewModel.NoteListener
 import com.ramadan.notify.ui.viewModel.NoteViewModel
+import com.ramadan.notify.utils.menuItemColor
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment
 import com.yalantis.contextmenu.lib.MenuObject
 import com.yalantis.contextmenu.lib.MenuParams
@@ -26,10 +24,10 @@ import kotlinx.android.synthetic.main.note.*
 
 
 class Note : AppCompatActivity(), NoteListener {
-    private val viewModel by lazy { ViewModelProviders.of(this).get(NoteViewModel::class.java) }
-    private lateinit var loadingDialog: AlertDialog
+    private val viewModel by lazy { ViewModelProvider(this).get(NoteViewModel::class.java) }
     private lateinit var binding: NoteBinding
     private lateinit var contextMenuDialogFragment: ContextMenuDialogFragment
+    private lateinit var note: NoteTable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,12 +35,10 @@ class Note : AppCompatActivity(), NoteListener {
         binding.noteModel = viewModel
         binding.lifecycleOwner = this
         viewModel.noteListener = this
-        supportActionBar?.title = "Text Note"
-        titleColor = getColor(R.color.colorPrimary)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(viewModel.color!!))
-        noteColorPicker.setListener { position, color ->
+        noteColorPicker.setListener { _, color ->
             noteLayout.setBackgroundColor(color)
             viewModel.color = color
             supportActionBar?.setBackgroundDrawable(ColorDrawable(color))
@@ -53,13 +49,13 @@ class Note : AppCompatActivity(), NoteListener {
     override fun onResume() {
         super.onResume()
         if (intent.hasExtra("note")) {
-            val note: NoteTable = intent.getSerializableExtra("note") as NoteTable
+            note = intent.getSerializableExtra("note") as NoteTable
             observeDate(note.id)
         }
     }
 
     override fun onBackPressed() {
-        if (!noteContent.text.isNullOrEmpty()) {
+        if (!noteContent.text.isNullOrEmpty() && noteContent.text!!.length != viewModel.content!!.length) {
             showAlertDialog()
         } else {
             super.onBackPressed()
@@ -73,13 +69,12 @@ class Note : AppCompatActivity(), NoteListener {
         val alertDialog = dialogBuilder.create()
         alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alertDialog.show()
-        val saveChange = layoutView.findViewById<TextView>(R.id.saveChange)
-        val dismiss = layoutView.findViewById<TextView>(R.id.dismiss)
+        val saveChange = layoutView.findViewById<TextView>(R.id.yes)
+        val dismiss = layoutView.findViewById<TextView>(R.id.discard)
         saveChange.setOnClickListener {
-            if (intent.hasExtra("note")) {
-                val note: NoteTable = intent.getSerializableExtra("note") as NoteTable
+            if (intent.hasExtra("note"))
                 viewModel.updateNote(applicationContext, note.id)
-            } else
+            else
                 viewModel.insertNote(applicationContext)
             alertDialog.dismiss()
         }
@@ -88,13 +83,13 @@ class Note : AppCompatActivity(), NoteListener {
             super.onBackPressed()
         }
     }
+
     private fun observeDate(id: Int) {
-        viewModel.getNote(applicationContext, id).observe(this, Observer {
+        viewModel.getNote(applicationContext, id).observe(this, {
             supportActionBar?.setBackgroundDrawable(ColorDrawable(it.color))
             noteColorPicker.selectColor(it.color)
             binding.noteModel = viewModel
             binding.lifecycleOwner = this
-            viewModel.noteListener = this
         })
     }
 
@@ -110,11 +105,16 @@ class Note : AppCompatActivity(), NoteListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        item.let {
-            if (it.itemId == R.id.context_menu) showContextMenuDialogFragment()
-        }
+        item.run { if (itemId == R.id.context_menu) showContextMenuDialogFragment() }
         return super.onOptionsItemSelected(item)
     }
+
+    private fun showContextMenuDialogFragment() {
+        if (supportFragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
+            contextMenuDialogFragment.show(supportFragmentManager, ContextMenuDialogFragment.TAG)
+        }
+    }
+
 
     private fun initMenuFragment() {
         val menuParams = MenuParams(
@@ -125,13 +125,11 @@ class Note : AppCompatActivity(), NoteListener {
         contextMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams).apply {
             menuItemClickListener = { view, position ->
                 if (position == 0) {
-                    if (intent.hasExtra("note")) {
-                        val note: NoteTable = intent.getSerializableExtra("note") as NoteTable
+                    if (intent.hasExtra("note"))
                         viewModel.updateNote(view.context, note.id)
-                    } else
+                    else
                         viewModel.insertNote(view.context)
                 } else if (position == 1) {
-                    val note: NoteTable = intent.getSerializableExtra("note") as NoteTable
                     viewModel.delete(view.context, note)
                 }
             }
@@ -139,23 +137,19 @@ class Note : AppCompatActivity(), NoteListener {
     }
 
     private fun getMenuObjects() = mutableListOf<MenuObject>().apply {
-        val save =
-            MenuObject("Save").apply { setResourceValue(R.drawable.save_note) }
-        save.setBgColorValue((Color.rgb(238, 238, 238)))
-        val delete =
-            MenuObject("Delete").apply { setResourceValue(R.drawable.delete) }
-        delete.setBgColorValue((Color.WHITE))
-        add(save)
-        add(delete)
-    }
-
-    private fun showContextMenuDialogFragment() {
-        if (supportFragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
-            contextMenuDialogFragment.show(supportFragmentManager, ContextMenuDialogFragment.TAG)
+        MenuObject("Save").apply {
+            setResourceValue(R.drawable.save_note)
+            setBgColorValue(menuItemColor)
+            add(this)
+        }
+        MenuObject("Delete").apply {
+            setResourceValue(R.drawable.delete)
+            setBgColorValue(menuItemColor)
+            add(this)
         }
     }
 
-    override fun onStarted() = Unit
+    override fun onStarted() {}
 
     override fun onSuccess() = super.onBackPressed()
 

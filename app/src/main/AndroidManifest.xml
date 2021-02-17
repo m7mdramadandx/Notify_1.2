@@ -2,27 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.ramadan.notify">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
+            android:name=".Application"
             android:allowBackup="true"
             android:allowClearUserData="false"
-            android:appCategory="social"
             android:fullBackupContent="true"
             android:hardwareAccelerated="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:largeHeap="true"
-            android:resizeableActivity="true"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:theme="@style/AppTheme">
 
@@ -30,31 +24,12 @@
                 android:name="com.google.android.gms.ads.APPLICATION_ID"
                 android:value="@string/ad_id" />
         <meta-data
-                android:name="com.google.firebase.messaging.default_notification_color"
-                android:resource="@color/colorAccent" />
+                android:name="com.onesignal.NotificationServiceExtension"
+                android:value="com.ramadan.notify.utils.NotificationReceived" />
 
-        <meta-data
-                android:name="com.google.firebase.messaging.default_notification_channel_id"
-                android:value="@string/channel_id" />
-
-        <meta-data
-                android:name="com.google.firebase.messaging.default_notification_icon"
-                android:resource="@mipmap/ic_launcher_round" />
-
-        <meta-data
-                android:name="com.google.firebase.messaging.default_notification_color"
-                android:resource="@color/colorAccent" />
-
-
-        <service
-                android:name=".utils.MessagingService"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-        <activity android:name=".ui.activity.SplashScreen">
+        <activity
+                android:name=".ui.activity.AppIntro"
+                android:theme="@style/AppTheme_NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -71,11 +46,12 @@
         <activity
                 android:name=".ui.activity.Whiteboard"
                 android:hardwareAccelerated="false" />
-        <activity
-                android:name=".ui.activity.AppIntro"
-                android:hardwareAccelerated="false" />
-        <activity android:name=".MainActivity" />
 
+        <activity
+                android:name=".MainActivity"
+                android:theme="@style/AppTheme_NoActionBar" />
+
+        <activity android:name=".ui.activity.SplashScreen" />
 
     </application>
 

@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.ramadan.notify.ui.activity
 
 import android.Manifest
@@ -17,7 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.devlomi.record_view.OnRecordListener
 import com.ramadan.notify.R
 import com.ramadan.notify.ui.viewModel.NoteListener
@@ -26,9 +24,7 @@ import com.ramadan.notify.utils.startHomeActivity
 import kotlinx.android.synthetic.main.record.*
 
 class Record : AppCompatActivity(), NoteListener {
-    private val viewModel by lazy {
-        ViewModelProviders.of(this).get(RecordViewModel::class.java)
-    }
+    private val viewModel by lazy { ViewModelProvider(this).get(RecordViewModel::class.java) }
     var recordName = "notify${System.currentTimeMillis()}.mp3"
 
     override fun onStart() {
@@ -39,7 +35,6 @@ class Record : AppCompatActivity(), NoteListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.record)
-        supportActionBar?.title = "Voice note"
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         viewModel.noteListener = this
@@ -70,9 +65,7 @@ class Record : AppCompatActivity(), NoteListener {
                 onSuccess()
             }
 
-            override fun onLessThanSecond() {
-                stopTimer()
-            }
+            override fun onLessThanSecond() = stopTimer()
         })
         recordView.setOnBasketAnimationEndListener {
             stopTimer()
@@ -100,11 +93,8 @@ class Record : AppCompatActivity(), NoteListener {
             viewModel.saveRecordToExternalStorage(recordName)
             alertDialog.cancel()
         }
-        cancel.setOnClickListener {
-            alertDialog.cancel()
-        }
+        cancel.setOnClickListener { alertDialog.cancel() }
     }
-
 
     fun startTimer() {
         chronometer.start()
@@ -130,17 +120,10 @@ class Record : AppCompatActivity(), NoteListener {
         permissions: Array<String>, grantResults: IntArray,
     ) {
         when (requestCode) {
-            77 -> {
-                if (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    return
-                }
-            }
-            else -> {
-                super.onBackPressed()
-            }
+            77 -> if (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) return
+            else -> super.onBackPressed()
         }
     }
-
 
     private fun checkPermission() {
         val permissions = arrayOf(Manifest.permission.RECORD_AUDIO)
@@ -157,9 +140,7 @@ class Record : AppCompatActivity(), NoteListener {
     }
 
 
-    override fun onStarted() {
-    }
-
+    override fun onStarted() {}
 
     override fun onSuccess() {
         Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()

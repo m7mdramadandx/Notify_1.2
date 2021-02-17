@@ -4,13 +4,12 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-
     <ImageView
             android:id="@+id/img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:minHeight="1000dp"
+            android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:src="@drawable/load_img" />
 

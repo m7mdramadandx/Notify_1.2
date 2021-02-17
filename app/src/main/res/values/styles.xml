@@ -2,39 +2,41 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/silver</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorSecondary">@color/colorAccent</item>
-        <item name="android:textColor">@color/colorText</item>
+        <item name="colorSecondary">@color/green1</item>
+        <item name="android:textColor">@color/grey_silver</item>
         <item name="android:textColorHint">@android:color/darker_gray</item>
+        <item name="android:colorBackground">@color/white_black</item>
+        <item name="android:textColorHighlight">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/comfortaa_family</item>
+        <item name="cardViewStyle">@style/CardViewStyle</item>
 
-        <item name="android:fontFamily">@font/comfortaa</item>
-        <item name="fontFamily">@font/comfortaa</item>
-
-        <item name="android:strokeColor">@color/colorAccent</item>
-        <item name="android:colorBackground">@color/colorBackground</item>
-
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/transparent</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
+        <item name="android:actionMenuTextColor">@color/grey_silver</item>
+        <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="actionMenuTextColor">@color/grey_silver</item>
+        <item name="fontFamily">@font/comfortaa_family</item>
         <item name="homeAsUpIndicator">@drawable/back</item>
 
     </style>
 
-    <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
-        <item name="android:background">@color/actionbar_background</item>
-        <item name="background">@color/actionbar_background</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:elevation">16dp</item>
-        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
-        <item name="titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
+    <style name="CardViewStyle" parent="CardView">
+        <item name="cardCornerRadius">10dp</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardBackgroundColor">@color/white_black</item>
     </style>
 
-    <style name="MyTheme.ActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/actionbar_text</item>
-        <item name="android:fontFamily">@font/comfortaa</item>
-        <item name="android:textStyle">bold</item>
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="android:background">@color/white_black</item>
+        <item name="background">@color/white_black</item>
+        <item name="android:elevation">16dp</item>
+    </style>
+
+    <!-- ActionBar tabs text -->
+    <style name="MyActionBarTabText" parent="@style/Widget.AppCompat.ActionBar.TabText">
+        <item name="android:textColor">@color/grey_silver</item>
     </style>
 
     <style name="ShrinkAnimation">
@@ -45,6 +47,34 @@
     <style name="SlideAnimation">
         <item name="android:windowEnterAnimation">@anim/animate_slide_in_left</item>
         <item name="android:windowExitAnimation">@anim/animate_slide_out_right</item>
+    </style>
+
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme_NoActionBar" parent="AppTheme">
+        <item name="actionBarStyle">@style/DashboardActionBar</item>
+        <item name="android:actionBarStyle">@style/DashboardActionBar</item>
+    </style>
+
+    <style name="DashboardActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="android:background">@color/white_black</item>
+        <item name="background">@color/white_black</item>
+        <item name="android:elevation">16dp</item>
+        <item name="android:titleTextStyle">@style/dashboard_title</item>
+        <item name="titleTextStyle">@style/dashboard_title</item>
+    </style>
+
+    <style name="dashboard_title" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/grey_silver</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:drawableStart">@drawable/notify_logo</item>
+        <item name="drawableSize">24dp</item>
+        <!--        <item name="android:drawableStart">@drawable/notify_logo</item>-->
+        <!--        <item name="android:drawable">@drawable/logo</item>-->
+
     </style>
 
 </resources>

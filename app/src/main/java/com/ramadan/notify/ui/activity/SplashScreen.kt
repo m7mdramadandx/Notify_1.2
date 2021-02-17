@@ -13,14 +13,10 @@ class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window!!.navigationBarColor = getColor(R.color.colorAccent)
-        supportActionBar?.hide()
         setContentView(R.layout.splash_screen)
-        val animation = AnimationUtils.loadAnimation(
-            this,
-            R.anim.animate_in_out_enter
-        )
+        val animation = AnimationUtils.loadAnimation(this, R.anim.animate_in_out_enter)
         animation.duration = 500
         notifyLogo.animation = animation
-        Handler().postDelayed(Runnable { startHomeActivity() }, 800)
+        Handler().postDelayed({ startHomeActivity() }, 800)
     }
 }

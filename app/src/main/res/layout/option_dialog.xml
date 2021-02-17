@@ -8,8 +8,7 @@
     <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="54dp"
-            app:cardCornerRadius="25dp">
+            android:layout_marginHorizontal="54dp">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -30,40 +29,38 @@
             <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
+                    android:layout_marginHorizontal="16dp"
                     android:layout_marginVertical="10dp"
-                    android:background="@color/lightGrey" />
+                    android:background="@color/grey_silver" />
 
             <TextView
                     android:id="@+id/share"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/share"
-                    android:drawablePadding="6dp"
                     android:layout_marginVertical="4dp"
+                    android:drawablePadding="6dp"
                     android:text="Share"
-                    android:textAllCaps="false"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    app:drawableLeftCompat="@drawable/share" />
 
             <TextView
                     android:id="@+id/rename"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="4dp"
-                    android:drawableLeft="@drawable/rename"
                     android:drawablePadding="4dp"
                     android:text="Rename"
-                    android:textAllCaps="false"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    app:drawableStartCompat="@drawable/rename" />
 
             <TextView
                     android:id="@+id/delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="4dp"
-                    android:drawableLeft="@drawable/delete"
                     android:text="Delete"
-                    android:textAllCaps="false"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    app:drawableLeftCompat="@drawable/delete" />
 
         </LinearLayout>
 

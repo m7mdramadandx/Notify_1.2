@@ -1,9 +1,6 @@
-@file:Suppress("DEPRECATION")
-
 package com.ramadan.notify.ui.activity
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -21,12 +18,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.ramadan.notify.R
 import com.ramadan.notify.ui.viewModel.NoteListener
 import com.ramadan.notify.ui.viewModel.WhiteboardViewModel
 import com.ramadan.notify.utils.DrawView
 import com.ramadan.notify.utils.TouchListener
+import com.ramadan.notify.utils.menuItemColor
 import com.ramadan.notify.utils.startHomeActivity
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment
 import com.yalantis.contextmenu.lib.MenuObject
@@ -36,20 +34,15 @@ import kotlinx.android.synthetic.main.whiteboard.*
 
 class Whiteboard : AppCompatActivity(), NoteListener {
 
-    private val viewModel by lazy {
-        ViewModelProviders.of(this).get(WhiteboardViewModel::class.java)
-    }
+    private val viewModel by lazy { ViewModelProvider(this).get(WhiteboardViewModel::class.java) }
     private lateinit var contextMenuDialogFragment: ContextMenuDialogFragment
     private var whiteboardName: String = "null"
     private var boardColor = Color.WHITE
     private lateinit var board: DrawView
 
-
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.whiteboard)
-        supportActionBar?.title = "Whiteboard"
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         viewModel.noteListener = this
@@ -60,7 +53,7 @@ class Whiteboard : AppCompatActivity(), NoteListener {
         board.setOnTouchListener(TouchListener())
         initMenuFragment()
 
-        penColorPicker.setListener { position, color ->
+        penColorPicker.setListener { _, color ->
             board.setCurrentWidth(seekBar.progress)
             board.setCurrentColor(color)
             eraser.setBackgroundColor(resources.getColor(R.color.white))
@@ -88,8 +81,8 @@ class Whiteboard : AppCompatActivity(), NoteListener {
         val alertDialog = dialogBuilder.create()
         alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alertDialog.show()
-        val saveChange = view.findViewById<TextView>(R.id.saveChange)
-        val dismiss = view.findViewById<TextView>(R.id.dismiss)
+        val saveChange = view.findViewById<TextView>(R.id.yes)
+        val dismiss = view.findViewById<TextView>(R.id.discard)
         saveChange.setOnClickListener {
             setName()
             alertDialog.cancel()
@@ -127,11 +120,8 @@ class Whiteboard : AppCompatActivity(), NoteListener {
     }
 
     fun eraser(view: View) {
-        if (boardColor == Color.WHITE) {
-            board.setCurrentColor(Color.WHITE)
-        } else {
-            board.setCurrentColor(Color.BLACK)
-        }
+        if (boardColor == Color.WHITE) board.setCurrentColor(Color.WHITE)
+        else board.setCurrentColor(Color.BLACK)
         board.setCurrentWidth(seekBar.progress * 8)
         eraser.setBackgroundColor(resources.getColor(R.color.colorAccent))
         penColorPicker.isLockMode = true
@@ -148,14 +138,14 @@ class Whiteboard : AppCompatActivity(), NoteListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        item.let {
-            when (it.itemId) {
-                R.id.context_menu -> {
-                    showContextMenuDialogFragment()
-                }
-            }
-        }
+        item.let { if (it.itemId == R.id.context_menu) showContextMenuDialogFragment() }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showContextMenuDialogFragment() {
+        if (supportFragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
+            contextMenuDialogFragment.show(supportFragmentManager, ContextMenuDialogFragment.TAG)
+        }
     }
 
     private fun initMenuFragment() {
@@ -164,9 +154,8 @@ class Whiteboard : AppCompatActivity(), NoteListener {
             menuObjects = getMenuObjects(),
             isClosableOutside = true
         )
-
         contextMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams).apply {
-            menuItemClickListener = { view, position ->
+            menuItemClickListener = { _, position ->
                 when (position) {
                     0 -> {
                         boardColor = if (boardColor == Color.WHITE) {
@@ -177,71 +166,52 @@ class Whiteboard : AppCompatActivity(), NoteListener {
                             Color.WHITE
                         }
                     }
-                    1 -> {
-                        board.clear()
-                    }
-                    2 -> {
-                        setName()
-                    }
+                    1 -> board.clear()
+                    2 -> setName()
                 }
             }
         }
     }
 
     private fun getMenuObjects() = mutableListOf<MenuObject>().apply {
-        val clear =
-            MenuObject("Clear").apply { setResourceValue(R.drawable.clear_whiteboard) }
-        clear.setBgColorValue((Color.rgb(238, 238, 238)))
-        val save =
-            MenuObject("Save").apply { setResourceValue(R.drawable.save_note) }
-        save.setBgColorValue((Color.WHITE))
-        val blackboard =
-            MenuObject("Switch board color").apply { setResourceValue(R.drawable.whiteboard) }
-        blackboard.setBgColorValue((Color.rgb(238, 238, 238)))
-        add(blackboard)
-        add(clear)
-        add(save)
+        MenuObject("Switch board color").apply {
+            setResourceValue(R.drawable.whiteboard)
+            setBgColorValue(menuItemColor)
+            add(this)
+        }
+        MenuObject("Clear").apply {
+            setResourceValue(R.drawable.clear_whiteboard)
+            setBgColorValue(menuItemColor)
+            add(this)
+        }
+        MenuObject("Save").apply {
+            setResourceValue(R.drawable.save_note)
+            setBgColorValue(menuItemColor)
+            add(this)
+        }
+
     }
 
-    private fun showContextMenuDialogFragment() {
-        if (supportFragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
-            contextMenuDialogFragment.show(supportFragmentManager, ContextMenuDialogFragment.TAG)
-        }
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>, grantResults: IntArray,
     ) {
         when (requestCode) {
-            101 -> {
-                if (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    return
-                }
-            }
-            else -> {
-                super.onBackPressed()
-            }
+            101 -> if (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) return
+            else -> super.onBackPressed()
         }
     }
 
     private fun checkPermission() {
         val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        if (ContextCompat.checkSelfPermission(
-                this,
-                permissions.toString()
-            )
+        if (ContextCompat.checkSelfPermission(this, permissions.toString())
             != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this, permissions, 101
-            )
-        }
+        ) ActivityCompat.requestPermissions(this, permissions, 101)
     }
 
-    override fun onStarted() {
-    }
+    override fun onStarted() {}
 
     override fun onSuccess() {
         startHomeActivity()
