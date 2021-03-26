@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">Notify</string>
-    <!--    <string name="playback_banner_id">ca-app-pub-5169956365910255/6583481846</string>-->
-    <string name="playback_banner_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="home_banner_id">ca-app-pub-5169956365910255/7791055062</string>
-    <string name="Interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="playback_banner_id">ca-app-pub-5169956365910255/7160035996</string>
+    <string name="main_activity_banner_id">ca-app-pub-5169956365910255/1852509620</string>
     <string name="ad_id">ca-app-pub-5169956365910255~6726952079</string>
     <string name="alert_msg">Would you like to save changes?</string>
 </resources>

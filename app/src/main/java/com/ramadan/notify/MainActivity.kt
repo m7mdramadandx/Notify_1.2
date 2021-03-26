@@ -1,15 +1,28 @@
 package com.ramadan.notify
 
+import android.app.Activity
+import android.content.Intent
+import android.content.IntentSender
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.InterstitialAd
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallState
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.ramadan.notify.data.repository.NoteRepository
 import com.ramadan.notify.data.repository.ToDoRepository
 import com.ramadan.notify.ui.activity.Notes
@@ -31,6 +44,108 @@ class MainActivity : AppCompatActivity() {
     private lateinit var contextMenuDialogFragment: ContextMenuDialogFragment
     private lateinit var mAdView: AdView
     private lateinit var mInterstitialAd: InterstitialAd
+    private val MY_REQUEST_CODE = 74
+    private val mAppUpdateManager: AppUpdateManager? = null
+    private val RC_APP_UPDATE = 11
+    private val appUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
+    private val appUpdatedListener: InstallStateUpdatedListener by lazy {
+        object : InstallStateUpdatedListener {
+            override fun onStateUpdate(installState: InstallState) {
+                when {
+                    installState.installStatus() == InstallStatus.DOWNLOADED -> popupSnackbarForCompleteUpdate()
+                    installState.installStatus() == InstallStatus.INSTALLED -> appUpdateManager.unregisterListener(
+                        this)
+                    else -> Log.d("UpdatedListener",
+                        installState.installStatus().toString())
+                }
+            }
+        }
+    }
+
+    private fun checkForAppUpdate() {
+        // Returns an intent object that you use to check for an update.
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+
+        // Checks that the platform will allow the specified type of update.
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                // Request the update.
+                try {
+                    val installType = when {
+                        appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) -> AppUpdateType.FLEXIBLE
+                        appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) -> AppUpdateType.IMMEDIATE
+                        else -> null
+                    }
+                    if (installType == AppUpdateType.FLEXIBLE) appUpdateManager.registerListener(
+                        appUpdatedListener)
+
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        installType!!,
+                        this,
+                        APP_UPDATE_REQUEST_CODE)
+                } catch (e: IntentSender.SendIntentException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == APP_UPDATE_REQUEST_CODE) {
+            if (resultCode != Activity.RESULT_OK) {
+                Toast.makeText(this,
+                    "App Update failed, please try again on the next app launch.",
+                    Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
+    private fun popupSnackbarForCompleteUpdate() {
+        val snackbar = Snackbar.make(
+            findViewById(R.id.drawer_layout),
+            "An update has just been downloaded.",
+            Snackbar.LENGTH_INDEFINITE)
+        snackbar.setAction("RESTART") { appUpdateManager.completeUpdate() }
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.accent))
+        snackbar.show()
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        appUpdateManager
+            .appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+
+                // If the update is downloaded but not installed,
+                // notify the user to complete the update.
+                if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                    popupSnackbarForCompleteUpdate()
+                }
+
+                //Check if Immediate update is required
+                try {
+                    if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                        // If an in-app update is already running, resume the update.
+                        appUpdateManager.startUpdateFlowForResult(
+                            appUpdateInfo,
+                            AppUpdateType.IMMEDIATE,
+                            this,
+                            APP_UPDATE_REQUEST_CODE)
+                    }
+                } catch (e: IntentSender.SendIntentException) {
+                    e.printStackTrace()
+                }
+            }
+    }
+
+    companion object {
+        private const val APP_UPDATE_REQUEST_CODE = 1991
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,11 +169,21 @@ class MainActivity : AppCompatActivity() {
         mAdView = findViewById(R.id.adView)
         mAdView.loadAd(AdRequest.Builder().build())
 
-        mInterstitialAd = InterstitialAd(this)
-//        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        mInterstitialAd.adUnitId = getString(R.string.Interstitial_ad_unit_id)
-//        mInterstitialAd.loadAd(AdRequest.Builder().build())
-
+        val DAYS_FOR_FLEXIBLE_UPDATE = 7
+        val appUpdateManager = AppUpdateManagerFactory.create(this)
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        appUpdateInfoTask.addOnSuccessListener {
+            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && it.clientVersionStalenessDays() != null
+                && it.clientVersionStalenessDays() >= DAYS_FOR_FLEXIBLE_UPDATE
+                && it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+            ) {
+                appUpdateManager.startUpdateFlowForResult(it,
+                    AppUpdateType.IMMEDIATE,
+                    this,
+                    MY_REQUEST_CODE)
+            }
+        }
     }
 
 

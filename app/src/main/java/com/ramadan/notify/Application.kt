@@ -4,6 +4,9 @@ import android.app.Application
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.RequestConfiguration.MAX_AD_CONTENT_RATING_T
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.messaging.FirebaseMessaging
 import com.onesignal.OneSignal
 import com.ramadan.notify.utils.NotificationOpenedHandler
@@ -30,5 +33,7 @@ class Application : Application() {
             .build()
         MobileAds.setRequestConfiguration(conf)
         MobileAds.initialize(this, getString(R.string.ad_id))
+
+
     }
 }
