@@ -10,10 +10,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.InterstitialAd
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -43,11 +43,11 @@ class MainActivity : AppCompatActivity() {
     private val whiteboards: Whiteboards = Whiteboards()
     private lateinit var contextMenuDialogFragment: ContextMenuDialogFragment
     private lateinit var mAdView: AdView
-    private lateinit var mInterstitialAd: InterstitialAd
-    private val MY_REQUEST_CODE = 74
+    private val APP_UPDATE_REQUEST_CODE = 1991
     private val mAppUpdateManager: AppUpdateManager? = null
-    private val RC_APP_UPDATE = 11
+
     private val appUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
+
     private val appUpdatedListener: InstallStateUpdatedListener by lazy {
         object : InstallStateUpdatedListener {
             override fun onStateUpdate(installState: InstallState) {
@@ -55,21 +55,38 @@ class MainActivity : AppCompatActivity() {
                     installState.installStatus() == InstallStatus.DOWNLOADED -> popupSnackbarForCompleteUpdate()
                     installState.installStatus() == InstallStatus.INSTALLED -> appUpdateManager.unregisterListener(
                         this)
-                    else -> Log.d("UpdatedListener",
-                        installState.installStatus().toString())
+                    else -> Log.d("UpdatedListener", installState.installStatus().toString())
                 }
             }
         }
     }
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.main)
+        val viewPager: ViewPager = findViewById(R.id.view_pager)
+        val tabLayout: TabLayout = findViewById(R.id.tabs)
+        val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, 0)
+        viewPagerAdapter.addFragment(notes)
+        viewPagerAdapter.addFragment(toDos)
+        viewPagerAdapter.addFragment(records)
+        viewPagerAdapter.addFragment(whiteboards)
+        viewPager.adapter = viewPagerAdapter
+        tabLayout.setupWithViewPager(viewPager)
+        tabLayout.getTabAt(0)!!.setIcon(R.drawable.note).contentDescription = "Text notes"
+        tabLayout.getTabAt(1)!!.setIcon(R.drawable.todo).contentDescription = "ToDos"
+        tabLayout.getTabAt(2)!!.setIcon(R.drawable.record).contentDescription = "Voice notes"
+        tabLayout.getTabAt(3)!!.setIcon(R.drawable.whiteboard).contentDescription = "Drawing notes"
+        initMenuFragment()
+        mAdView = findViewById(R.id.adView)
+        mAdView.loadAd(AdRequest.Builder().build())
+        checkForAppUpdate()
+    }
 
     private fun checkForAppUpdate() {
-        // Returns an intent object that you use to check for an update.
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-
-        // Checks that the platform will allow the specified type of update.
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-                // Request the update.
                 try {
                     val installType = when {
                         appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) -> AppUpdateType.FLEXIBLE
@@ -91,7 +108,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == APP_UPDATE_REQUEST_CODE) {
@@ -106,31 +122,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun popupSnackbarForCompleteUpdate() {
         val snackbar = Snackbar.make(
-            findViewById(R.id.drawer_layout),
+            findViewById(R.id.main),
             "An update has just been downloaded.",
             Snackbar.LENGTH_INDEFINITE)
         snackbar.setAction("RESTART") { appUpdateManager.completeUpdate() }
-        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.accent))
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccent))
         snackbar.show()
     }
-
 
     override fun onResume() {
         super.onResume()
         appUpdateManager
             .appUpdateInfo
             .addOnSuccessListener { appUpdateInfo ->
-
-                // If the update is downloaded but not installed,
-                // notify the user to complete the update.
                 if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                     popupSnackbarForCompleteUpdate()
                 }
-
-                //Check if Immediate update is required
                 try {
                     if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                        // If an in-app update is already running, resume the update.
                         appUpdateManager.startUpdateFlowForResult(
                             appUpdateInfo,
                             AppUpdateType.IMMEDIATE,
@@ -143,49 +152,10 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    companion object {
-        private const val APP_UPDATE_REQUEST_CODE = 1991
+    override fun onStop() {
+        super.onStop()
+        mAppUpdateManager?.unregisterListener(appUpdatedListener)
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.main)
-        val viewPager: ViewPager = findViewById(R.id.view_pager)
-        val tabLayout: TabLayout = findViewById(R.id.tabs)
-        val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, 0)
-        viewPagerAdapter.addFragment(notes)
-        viewPagerAdapter.addFragment(toDos)
-        viewPagerAdapter.addFragment(records)
-        viewPagerAdapter.addFragment(whiteboards)
-        viewPager.adapter = viewPagerAdapter
-        tabLayout.setupWithViewPager(viewPager)
-        tabLayout.getTabAt(0)!!.setIcon(R.drawable.note).contentDescription = "Text notes"
-        tabLayout.getTabAt(1)!!.setIcon(R.drawable.todo).contentDescription = "ToDos"
-        tabLayout.getTabAt(2)!!.setIcon(R.drawable.record).contentDescription = "Voice notes"
-        tabLayout.getTabAt(3)!!.setIcon(R.drawable.whiteboard).contentDescription = "Drawing notes"
-
-        initMenuFragment()
-
-        mAdView = findViewById(R.id.adView)
-        mAdView.loadAd(AdRequest.Builder().build())
-
-        val DAYS_FOR_FLEXIBLE_UPDATE = 7
-        val appUpdateManager = AppUpdateManagerFactory.create(this)
-        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-        appUpdateInfoTask.addOnSuccessListener {
-            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                && it.clientVersionStalenessDays() != null
-                && it.clientVersionStalenessDays() >= DAYS_FOR_FLEXIBLE_UPDATE
-                && it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
-            ) {
-                appUpdateManager.startUpdateFlowForResult(it,
-                    AppUpdateType.IMMEDIATE,
-                    this,
-                    MY_REQUEST_CODE)
-            }
-        }
-    }
-
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
