@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var contextMenuDialogFragment: ContextMenuDialogFragment
     private lateinit var mAdView: AdView
     private val APP_UPDATE_REQUEST_CODE = 1991
+    private val REQUEST_UPDATE = 100
+    private lateinit var updateListener: InstallStateUpdatedListener
+
     private val mAppUpdateManager: AppUpdateManager? = null
 
     private val appUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
@@ -53,14 +56,14 @@ class MainActivity : AppCompatActivity() {
             override fun onStateUpdate(installState: InstallState) {
                 when {
                     installState.installStatus() == InstallStatus.DOWNLOADED -> popupSnackbarForCompleteUpdate()
-                    installState.installStatus() == InstallStatus.INSTALLED -> appUpdateManager.unregisterListener(
-                        this)
+                    installState.installStatus() == InstallStatus.INSTALLED ->
+                        appUpdateManager.unregisterListener(this)
                     else -> Log.d("UpdatedListener", installState.installStatus().toString())
                 }
             }
         }
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
@@ -78,10 +81,11 @@ class MainActivity : AppCompatActivity() {
         tabLayout.getTabAt(2)!!.setIcon(R.drawable.record).contentDescription = "Voice notes"
         tabLayout.getTabAt(3)!!.setIcon(R.drawable.whiteboard).contentDescription = "Drawing notes"
         initMenuFragment()
+        checkForAppUpdate()
         mAdView = findViewById(R.id.adView)
         mAdView.loadAd(AdRequest.Builder().build())
-        checkForAppUpdate()
     }
+
 
     private fun checkForAppUpdate() {
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
@@ -93,9 +97,9 @@ class MainActivity : AppCompatActivity() {
                         appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) -> AppUpdateType.IMMEDIATE
                         else -> null
                     }
-                    if (installType == AppUpdateType.FLEXIBLE) appUpdateManager.registerListener(
-                        appUpdatedListener)
-
+                    if (installType == AppUpdateType.FLEXIBLE) {
+                        appUpdateManager.registerListener(appUpdatedListener)
+                    }
                     appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
                         installType!!,

@@ -83,9 +83,11 @@ class ToDoAdapter(val context: ToDos) :
     class ViewToDoViewHolder(private var binding: TodoItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         private val mContext: Context = itemView.context
+
         fun bind(todo: ToDoTable) {
             binding.todoItem = todo
             binding.executePendingBindings()
+            binding.delete.setOnClickListener { ToDoRepository.deleteToDo(mContext, todo) }
             binding.checkBox.setOnCheckedChangeListener { button, b ->
                 if (b) {
                     todo.isDone = true
@@ -100,9 +102,11 @@ class ToDoAdapter(val context: ToDos) :
                         .addSizes(Size(12))
                         .setPosition(-50f, binding.viewKonfetti.width + 50f, -50f, -50f)
                         .streamFor(300, 5000L)
+                } else {
+                    return@setOnCheckedChangeListener
                 }
             }
-            binding.delete.setOnClickListener { ToDoRepository.deleteToDo(mContext, todo) }
+
 
         }
     }

@@ -37,16 +37,6 @@ class Whiteboards : Fragment(), NoteListener {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
         recyclerView.layoutManager = staggeredGridLayoutManager
         recyclerView.adapter = adapter
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
-                    (activity as AppCompatActivity).supportActionBar?.hide()
-                } else {
-                    (activity as AppCompatActivity).supportActionBar?.show()
-                }
-            }
-        })
         return view
     }
 

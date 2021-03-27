@@ -8,7 +8,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 
 public class LinedEditText extends androidx.appcompat.widget.AppCompatEditText {
-    private static Paint linePaint;
+    private static final Paint linePaint;
 
     static {
         linePaint = new Paint();

@@ -5,6 +5,8 @@ import android.os.Handler
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.ramadan.notify.R
+import com.ramadan.notify.utils.getFirstOpen
+import com.ramadan.notify.utils.startAppIntroActivity
 import com.ramadan.notify.utils.startHomeActivity
 import kotlinx.android.synthetic.main.splash_screen.*
 
@@ -12,11 +14,13 @@ import kotlinx.android.synthetic.main.splash_screen.*
 class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         window!!.navigationBarColor = getColor(R.color.colorAccent)
         setContentView(R.layout.splash_screen)
         val animation = AnimationUtils.loadAnimation(this, R.anim.animate_in_out_enter)
         animation.duration = 500
         notifyLogo.animation = animation
-        Handler().postDelayed({ startHomeActivity() }, 800)
+        Handler().postDelayed({ if (getFirstOpen()) startAppIntroActivity() else startHomeActivity() },
+            800)
     }
 }

@@ -10,6 +10,7 @@ import com.github.appintro.AppIntroFragment
 import com.github.appintro.AppIntroPageTransformerType
 import com.github.appintro.model.SliderPage
 import com.ramadan.notify.R
+import com.ramadan.notify.utils.setFirstOpen
 import com.ramadan.notify.utils.startHomeActivity
 
 class AppIntro : AppIntro2() {
@@ -83,9 +84,7 @@ class AppIntro : AppIntro2() {
             required = true
         )
         askForPermissions(
-            permissions = arrayOf(
-                Manifest.permission.RECORD_AUDIO
-            ),
+            permissions = arrayOf(Manifest.permission.RECORD_AUDIO),
             slideNumber = 3,
             required = true
         )
@@ -98,13 +97,11 @@ class AppIntro : AppIntro2() {
 
     public override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
+        setFirstOpen()
         startHomeActivity()
     }
 
-    override fun onUserDeniedPermission(permissionName: String) {
+    override fun onUserDeniedPermission(permissionName: String) = Unit
 
-    }
-
-    override fun onUserDisabledPermission(permissionName: String) {
-    }
+    override fun onUserDisabledPermission(permissionName: String) = Unit
 }

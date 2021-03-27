@@ -54,10 +54,38 @@
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/jarAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/jarAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_play_core_1_7_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_play_core_ktx_1_7_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_kotlinx_kotlinx_coroutines_android_1_3_7.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_kotlinx_kotlinx_coroutines_core_1_3_7.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/app/Notify.app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/Notify.app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/release/release/app-release.apk" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/release/app-release.apk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/data/repository/ToDoRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/data/repository/ToDoRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/activity/AppIntro.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/activity/AppIntro.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/activity/SplashScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/activity/SplashScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/activity/ToDo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/activity/ToDo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/activity/Whiteboards.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/activity/Whiteboards.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/adapter/ToDoAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/adapter/ToDoAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/viewModel/ToDoViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/ui/viewModel/ToDoViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/utils/DrawView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/utils/DrawView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/utils/LinedEditText.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/utils/LinedEditText.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/utils/LinedTextView.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/utils/LinedTextView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/utils/ViewUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ramadan/notify/utils/ViewUtils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/main.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -403,10 +431,10 @@
       <screen x="0" y="30" width="1536" height="834" />
     </state>
     <state x="300" y="251" key="#com.intellij.fileTypes.FileTypeChooser/0.30.1536.834@0.30.1536.834" timestamp="1609566943727" />
-    <state x="416" y="166" key="#com.intellij.ide.util.MemberChooser" timestamp="1613574869290">
+    <state x="416" y="166" key="#com.intellij.ide.util.MemberChooser" timestamp="1616800737929">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
-    <state x="416" y="166" key="#com.intellij.ide.util.MemberChooser/0.30.1536.834@0.30.1536.834" timestamp="1613574869290" />
+    <state x="416" y="166" key="#com.intellij.ide.util.MemberChooser/0.30.1536.834@0.30.1536.834" timestamp="1616800737929" />
     <state x="698" y="30" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1609478130402">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
@@ -415,6 +443,10 @@
       <screen x="0" y="30" width="1536" height="834" />
     </state>
     <state x="340" y="195" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.30.1536.834@0.30.1536.834" timestamp="1609900323577" />
+    <state x="383" y="292" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1616801524193">
+      <screen x="0" y="30" width="1536" height="834" />
+    </state>
+    <state x="383" y="292" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.30.1536.834@0.30.1536.834" timestamp="1616801524193" />
     <state x="218" y="205" key="AndroidCreateResourceFileDialog" timestamp="1613579220871">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
@@ -435,38 +467,38 @@
       <screen x="0" y="30" width="1536" height="834" />
     </state>
     <state x="216" y="176" key="FileChooserDialogImpl/0.30.1536.834@0.30.1536.834" timestamp="1613588907307" />
-    <state width="1230" height="77" key="GridCell.Tab.0.bottom" timestamp="1614889594976">
+    <state width="1230" height="261" key="GridCell.Tab.0.bottom" timestamp="1616801479597">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
-    <state width="1230" height="77" key="GridCell.Tab.0.bottom/0.30.1536.834@0.30.1536.834" timestamp="1614889594976" />
-    <state width="1230" height="77" key="GridCell.Tab.0.center" timestamp="1614889594975">
+    <state width="1230" height="261" key="GridCell.Tab.0.bottom/0.30.1536.834@0.30.1536.834" timestamp="1616801479597" />
+    <state width="1230" height="261" key="GridCell.Tab.0.center" timestamp="1616801479597">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
-    <state width="1230" height="77" key="GridCell.Tab.0.center/0.30.1536.834@0.30.1536.834" timestamp="1614889594975" />
-    <state width="1230" height="77" key="GridCell.Tab.0.left" timestamp="1614889594975">
+    <state width="1230" height="261" key="GridCell.Tab.0.center/0.30.1536.834@0.30.1536.834" timestamp="1616801479597" />
+    <state width="1230" height="261" key="GridCell.Tab.0.left" timestamp="1616801479597">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
-    <state width="1230" height="77" key="GridCell.Tab.0.left/0.30.1536.834@0.30.1536.834" timestamp="1614889594975" />
-    <state width="1230" height="77" key="GridCell.Tab.0.right" timestamp="1614889594975">
+    <state width="1230" height="261" key="GridCell.Tab.0.left/0.30.1536.834@0.30.1536.834" timestamp="1616801479597" />
+    <state width="1230" height="261" key="GridCell.Tab.0.right" timestamp="1616801479597">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
-    <state width="1230" height="77" key="GridCell.Tab.0.right/0.30.1536.834@0.30.1536.834" timestamp="1614889594975" />
-    <state width="1094" height="252" key="GridCell.Tab.1.bottom" timestamp="1609742888198">
+    <state width="1230" height="261" key="GridCell.Tab.0.right/0.30.1536.834@0.30.1536.834" timestamp="1616801479597" />
+    <state width="1230" height="261" key="GridCell.Tab.1.bottom" timestamp="1616801479597">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
-    <state width="1094" height="252" key="GridCell.Tab.1.bottom/0.30.1536.834@0.30.1536.834" timestamp="1609742888198" />
-    <state width="1094" height="252" key="GridCell.Tab.1.center" timestamp="1609742888198">
+    <state width="1230" height="261" key="GridCell.Tab.1.bottom/0.30.1536.834@0.30.1536.834" timestamp="1616801479597" />
+    <state width="1230" height="261" key="GridCell.Tab.1.center" timestamp="1616801479597">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
-    <state width="1094" height="252" key="GridCell.Tab.1.center/0.30.1536.834@0.30.1536.834" timestamp="1609742888198" />
-    <state width="1094" height="252" key="GridCell.Tab.1.left" timestamp="1609742888198">
+    <state width="1230" height="261" key="GridCell.Tab.1.center/0.30.1536.834@0.30.1536.834" timestamp="1616801479597" />
+    <state width="1230" height="261" key="GridCell.Tab.1.left" timestamp="1616801479597">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
-    <state width="1094" height="252" key="GridCell.Tab.1.left/0.30.1536.834@0.30.1536.834" timestamp="1609742888198" />
-    <state width="1094" height="252" key="GridCell.Tab.1.right" timestamp="1609742888198">
+    <state width="1230" height="261" key="GridCell.Tab.1.left/0.30.1536.834@0.30.1536.834" timestamp="1616801479597" />
+    <state width="1230" height="261" key="GridCell.Tab.1.right" timestamp="1616801479597">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
-    <state width="1094" height="252" key="GridCell.Tab.1.right/0.30.1536.834@0.30.1536.834" timestamp="1609742888198" />
+    <state width="1230" height="261" key="GridCell.Tab.1.right/0.30.1536.834@0.30.1536.834" timestamp="1616801479597" />
     <state x="105" y="59" width="978" height="712" key="SettingsEditor" timestamp="1609562508494">
       <screen x="0" y="30" width="1536" height="834" />
     </state>
@@ -483,6 +515,10 @@
       <screen x="0" y="30" width="1536" height="834" />
     </state>
     <state x="330" y="98" key="refactoring.ChangeSignatureDialog/0.30.1536.834@0.30.1536.834" timestamp="1609565421257" />
+    <state x="299" y="209" width="672" height="677" key="run.anything.popup" timestamp="1616801759191">
+      <screen x="0" y="30" width="1536" height="834" />
+    </state>
+    <state x="299" y="209" width="672" height="677" key="run.anything.popup/0.30.1536.834@0.30.1536.834" timestamp="1616801759191" />
     <state x="238" y="186" width="672" height="678" key="search.everywhere.popup" timestamp="1609809119105">
       <screen x="0" y="30" width="1536" height="834" />
     </state>

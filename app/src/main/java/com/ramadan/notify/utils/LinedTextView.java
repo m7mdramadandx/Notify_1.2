@@ -8,7 +8,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 
 public class LinedTextView extends androidx.appcompat.widget.AppCompatTextView {
-    private static Paint linePaint;
+    private static final Paint linePaint;
 
     static {
         linePaint = new Paint();

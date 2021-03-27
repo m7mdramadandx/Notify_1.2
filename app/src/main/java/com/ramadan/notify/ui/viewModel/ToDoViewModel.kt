@@ -9,7 +9,7 @@ import com.ramadan.notify.data.model.ToDoTable
 import com.ramadan.notify.data.repository.ToDoRepository
 
 
-class ToDoViewModel() : ViewModel() {
+class ToDoViewModel : ViewModel() {
 
     fun insertToDo(context: Context, name: String) {
         val note = ToDoTable(name = name)

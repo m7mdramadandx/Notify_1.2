@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ToDoRepository() {
+class ToDoRepository {
 
     companion object {
         private var toDoDatabase: ToDoDatabase? = null

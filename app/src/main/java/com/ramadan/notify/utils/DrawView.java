@@ -14,10 +14,10 @@ import java.util.ArrayList;
 
 public class DrawView extends View {
 
-    private ArrayList<Path> paths = new ArrayList<>();
-    private ArrayList<Integer> colors = new ArrayList<>();
+    private final ArrayList<Path> paths = new ArrayList<>();
+    private final ArrayList<Integer> colors = new ArrayList<>();
     private int currentColor = 0xFF000000;
-    private ArrayList<Integer> widths = new ArrayList<>();
+    private final ArrayList<Integer> widths = new ArrayList<>();
     private int currentWidth = 6;
     private Paint mBitmapPaint;
     public Bitmap mBitmap;
