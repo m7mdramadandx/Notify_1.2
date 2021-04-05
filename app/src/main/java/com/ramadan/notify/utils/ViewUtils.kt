@@ -1,13 +1,18 @@
+@file:Suppress("DEPRECATION")
+
 package com.ramadan.notify.utils
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.preference.PreferenceManager.getDefaultSharedPreferences
+import android.view.View
+import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import com.ramadan.notify.MainActivity
 import com.ramadan.notify.data.model.NoteTable
-import com.ramadan.notify.ui.activity.AppIntro
-import com.ramadan.notify.ui.activity.Note
+import com.ramadan.notify.ui.activity.AppIntroActivity
+import com.ramadan.notify.ui.activity.NoteActivity
 
 fun Context.startHomeActivity() =
     Intent(this, MainActivity::class.java).also {
@@ -16,13 +21,13 @@ fun Context.startHomeActivity() =
     }
 
 fun Context.startAppIntroActivity() =
-    Intent(this, AppIntro::class.java).also {
+    Intent(this, AppIntroActivity::class.java).also {
         it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(it)
     }
 
 fun Context.startNoteActivity(writtenNote: NoteTable) =
-    Intent(this, Note::class.java).also {
+    Intent(this, NoteActivity::class.java).also {
         it.putExtra("note", writtenNote)
         startActivity(it)
     }
@@ -54,9 +59,22 @@ fun Context.getFirstOpen(): Boolean {
     return prefs.getBoolean("FIRST_OPEN", false)
 }
 
+fun Context.showToast(msg: String) {
+    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+}
+
+fun View.snackBar(msg: String) {
+    Snackbar.make(this, msg, Snackbar.LENGTH_LONG).apply {
+        setTextColor(Color.WHITE)
+    }
+}
+
 
 val menuItemColor = Color.rgb(238, 238, 238)
-const val DEBUG_TAG = "TOTO"
+const val debug_tag = "TOTO"
+const val STORAGE_PERMISSION = 1001
+const val tryAgainMsg = "Sorry, try again later."
+
 
 
 

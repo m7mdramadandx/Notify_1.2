@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Notify.iml" filepath="$PROJECT_DIR$/.idea/modules/Notify.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Notify.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Notify.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/nativetemplates/Notify.nativetemplates.iml" filepath="$PROJECT_DIR$/.idea/modules/nativetemplates/Notify.nativetemplates.iml" />
     </modules>
   </component>
 </project>

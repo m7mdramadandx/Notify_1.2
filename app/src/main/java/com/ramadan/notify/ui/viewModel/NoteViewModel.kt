@@ -23,6 +23,10 @@ class NoteViewModel : ViewModel() {
     var color: Int? = Color.parseColor("#ffffff")
     var noteListener: NoteListener? = null
 
+    companion object {
+        val noteRepository = NoteRepository()
+    }
+
     fun insertNote(context: Context) {
         if (content.isNullOrEmpty()) {
             noteListener?.onFailure("No content to save")
@@ -30,7 +34,7 @@ class NoteViewModel : ViewModel() {
         }
         if (name.isNullOrEmpty()) name = ""
         val note = NoteTable(date = date!!, name = name!!, content = content!!, color = color!!)
-        NoteRepository.insertNote(context, note)
+        noteRepository.insertNote(context, note)
         noteListener?.onSuccess()
         return
     }
@@ -42,16 +46,16 @@ class NoteViewModel : ViewModel() {
         }
         if (name.isNullOrEmpty()) name = ""
         val note = NoteTable(ID, date!!, name!!, content!!, color!!)
-        NoteRepository.updateNote(context, note)
+        noteRepository.updateNote(context, note)
         noteListener?.onSuccess()
         return
     }
 
-    fun retrieveNotes(context: Context): LiveData<MutableList<NoteTable>> =
-        NoteRepository.retrieveNotes(context)
+     fun retrieveNotes(context: Context): LiveData<MutableList<NoteTable>> =
+        noteRepository.retrieveNotes(context)
 
     fun getNote(context: Context, ID: Int): LiveData<NoteTable> {
-        val liveData: LiveData<NoteTable> = NoteRepository.getNote(context, ID)
+        val liveData: LiveData<NoteTable> = noteRepository.getNote(context, ID)
         liveData.observeForever {
             date = it.date
             name = it.name
@@ -66,7 +70,7 @@ class NoteViewModel : ViewModel() {
             noteListener?.onFailure("No content to delete")
             return
         }
-        NoteRepository.deleteNote(context, note)
+        noteRepository.deleteNote(context, note)
         return
     }
 

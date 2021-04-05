@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,12 +22,20 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.ads.nativetemplates.NativeTemplateStyle
+import com.google.android.ads.nativetemplates.TemplateView
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.formats.NativeAdOptions
 import com.ramadan.notify.R
-import com.ramadan.notify.ui.activity.PlayRecord
-import com.ramadan.notify.ui.activity.Record
+import com.ramadan.notify.ui.activity.RecordActivity
+import com.ramadan.notify.ui.fragment.PlayRecordFragment
+import com.ramadan.notify.utils.debug_tag
 import com.ramadan.notify.utils.getRecordLength
+import com.ramadan.notify.utils.snackBar
 import com.ramadan.notify.utils.startHomeActivity
-import kotlinx.android.synthetic.main.record_item.view.*
+import kotlinx.android.synthetic.main.item_record.view.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,46 +43,92 @@ import java.util.*
 
 class RecordAdapter(private val filepath: Array<String?>?) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val viewRecord = 0
-    private val addRecord = 1
 
-    override fun getItemViewType(position: Int): Int {
-        return if (position == 0) addRecord else viewRecord
+    companion object {
+        private const val addRecord = 2
+        private const val viewRecord = 1
+        private const val adView = 3
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == viewRecord) {
-            val view: View =
-                LayoutInflater.from(parent.context).inflate(R.layout.record_item, parent, false)
-            return ViewRecordViewHolder(view)
-
-        } else {
-            val view: View = LayoutInflater.from(parent.context)
-                .inflate(R.layout.add_item, parent, false)
-            NoteAdapter.AddNoteViewHolder(view)
-
+    override fun getItemViewType(position: Int): Int {
+        return when {
+            position == 0 -> addRecord
+            position % 3 == 0 -> adView
+            else -> viewRecord
         }
     }
 
-    override fun getItemCount(): Int {
-        if (filepath == null)
-            return 1
-        if (filepath.isNotEmpty())
-            return filepath.size + 1
-        return 1
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            addRecord -> {
+                val view: View =
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_add, parent, false)
+                AddRecordViewHolder(view)
+            }
+            adView -> {
+                val view: View = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_native_ad_templete, parent, false)
+                return NoteAdapter.AdViewHolder(view)
+            }
+            else -> {
+                val view: View =
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_record, parent, false)
+                return ViewRecordViewHolder(view)
+            }
+        }
     }
 
+
+    override fun getItemCount(): Int {
+        filepath?.let {
+            return if (it.isNotEmpty()) {
+                if (it.size % 3 == 0) {
+                    (it.size / 3) + 1 + it.size
+                } else
+                    it.size + 1
+            } else 1
+        } ?: return 1
+    }
+
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (getItemViewType(position) == viewRecord) {
-            val file = File(filepath!![position - 1]!!)
-            (holder as ViewRecordViewHolder).customView(file)
-        } else {
-            val addRecordViewHolder = AddRecordViewHolder(holder.itemView)
-            addRecordViewHolder.addNote!!.setOnClickListener {
-                addRecordViewHolder.mContext.startActivity(
-                    Intent(addRecordViewHolder.mContext, Record::class.java)
-                )
+        val mContext = holder.itemView.context
+        when (getItemViewType(position)) {
+            addRecord -> {
+                val addRecordViewHolder = AddRecordViewHolder(holder.itemView)
+                addRecordViewHolder.addNote!!.setOnClickListener {
+                    mContext.startActivity(Intent(mContext, RecordActivity::class.java))
+                }
             }
+            viewRecord -> {
+                val file = File(filepath!![position - 1]!!)
+                (holder as ViewRecordViewHolder).customView(file)
+            }
+            adView -> {
+                println("eee")
+            }
+//                val adLoader: AdLoader =
+//                    AdLoader.Builder(mContext, mContext.getString(R.string.native_ad))
+//                        .forUnifiedNativeAd { unifiedNativeAd ->
+//                            val styles = NativeTemplateStyle.Builder().build()
+//                            val template: TemplateView =
+//                                (holder as NoteAdapter.AdViewHolder).adTemplate
+//                            template.setStyles(styles)
+//                            template.setNativeAd(unifiedNativeAd)
+//                        }
+//                        .withAdListener(object : AdListener() {
+//                            override fun onAdFailedToLoad(errorCode: Int) {
+//                                Log.e(debug_tag, errorCode.toString())
+//                            }
+//
+//                            override fun onAdLoaded() {
+//                                super.onAdLoaded()
+//                                Log.e(debug_tag, "loaded")
+//                            }
+//                        })
+//                        .withNativeAdOptions(NativeAdOptions.Builder().build()).build()
+//                adLoader.loadAd(AdRequest.Builder().build())
+//            }
         }
     }
 
@@ -90,11 +145,11 @@ class RecordAdapter(private val filepath: Array<String?>?) :
             itemView.recordDate.text = currentDate.format(date)
             itemView.setOnClickListener {
                 try {
-                    val playRecord = PlayRecord().newInstance(file)
+                    val playRecord = PlayRecordFragment().newInstance(file)
                     val transaction: FragmentTransaction = (mContext as FragmentActivity)
                         .supportFragmentManager
                         .beginTransaction()
-                    playRecord?.show(transaction, "dialog_playback")
+                    playRecord.show(transaction, "dialog_playback")
                 } catch (e: Exception) {
                     println(e)
                 }
@@ -107,24 +162,26 @@ class RecordAdapter(private val filepath: Array<String?>?) :
 
         private fun showOption(file: File) {
             val dialogBuilder = AlertDialog.Builder(mContext)
-            val view = View.inflate(mContext, R.layout.option_dialog, null)
+            val view = View.inflate(mContext, R.layout.dialog_option, null)
             dialogBuilder.setView(view)
             val alertDialog = dialogBuilder.create()
             alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             alertDialog.show()
             alertDialog.setCancelable(true)
-            val share = view.findViewById<TextView>(R.id.share)
-            val rename = view.findViewById<TextView>(R.id.rename)
-            val delete = view.findViewById<TextView>(R.id.delete)
-            share.setOnClickListener {
-                shareRecord(file)
+            view.findViewById<TextView>(R.id.share).setOnClickListener {
+                Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
+                    type = "audio/mp3"
+                    mContext.startActivity(Intent.createChooser(this, "Send to"))
+                }
                 alertDialog.cancel()
             }
-            rename.setOnClickListener {
+            view.findViewById<TextView>(R.id.rename).setOnClickListener {
                 renameRecord(file)
                 alertDialog.dismiss()
             }
-            delete.setOnClickListener {
+            view.findViewById<TextView>(R.id.delete).setOnClickListener {
                 file.delete()
                 Toast.makeText(mContext, "Deleted", Toast.LENGTH_SHORT).show()
                 alertDialog.cancel()
@@ -132,55 +189,43 @@ class RecordAdapter(private val filepath: Array<String?>?) :
             }
         }
 
-
-        private fun shareRecord(file: File) {
-            val shareIntent = Intent()
-            shareIntent.action = Intent.ACTION_SEND
-            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
-            shareIntent.type = "audio/mp3"
-            mContext.startActivity(Intent.createChooser(shareIntent, "Send to"))
-        }
-
         private fun renameRecord(file: File) {
             val dialogBuilder = AlertDialog.Builder(mContext)
-            val view = View.inflate(mContext, R.layout.edit_text_dialog, null)
+            val view = View.inflate(mContext, R.layout.dialog_edit_text, null)
             dialogBuilder.setView(view)
             val alertDialog = dialogBuilder.create()
             alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             alertDialog.window!!.attributes.windowAnimations = R.style.SlideAnimation
             alertDialog.show()
-            val title = view.findViewById<TextView>(R.id.title)
-            title.text = "Record name"
+            view.findViewById<TextView>(R.id.title).text = "Record name"
             val newName = view.findViewById<View>(R.id.input) as EditText
-            val confirm = view.findViewById<TextView>(R.id.confirm)
-            val cancel = view.findViewById<TextView>(R.id.cancel)
-            confirm.setOnClickListener {
+            view.findViewById<TextView>(R.id.confirm).setOnClickListener {
                 try {
                     val value = newName.text.toString() + ".mp3"
                     file.renameTo(File(dirPath + value))
-                    Toast.makeText(mContext, "Renamed", Toast.LENGTH_SHORT).show()
+                    it.snackBar("Renamed")
                     alertDialog.cancel()
                     mContext.startHomeActivity()
                 } catch (e: java.lang.Exception) {
                     mContext.startHomeActivity()
                 }
             }
-            cancel.setOnClickListener { alertDialog.cancel() }
-
+            view.findViewById<TextView>(R.id.cancel).setOnClickListener { alertDialog.cancel() }
         }
 
         private fun getDuration(file: File): String? {
             val mediaMetadataRetriever = MediaMetadataRetriever()
             mediaMetadataRetriever.setDataSource(mContext, Uri.fromFile(file))
-            val durationStr =
-                mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            println(durationStr)
-            return durationStr
+            return mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
         }
     }
 
     class AddRecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val mContext: Context = itemView.context
         val addNote: ImageButton? = itemView.findViewById(R.id.addItem)
     }
+
+    class AdViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val adTemplate: TemplateView = itemView.findViewById(R.id.nativeTemplateView)
+    }
+
 }

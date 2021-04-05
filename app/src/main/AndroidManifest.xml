@@ -13,7 +13,6 @@
             android:allowBackup="true"
             android:allowClearUserData="false"
             android:fullBackupContent="true"
-            android:hardwareAccelerated="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:largeHeap="true"
@@ -28,24 +27,24 @@
                 android:value="com.ramadan.notify.utils.NotificationReceived" />
 
         <activity
-                android:name=".ui.activity.AppIntro"
+                android:name=".ui.activity.AppIntroActivity"
                 android:theme="@style/AppTheme_NoActionBar" />
 
         <activity
-                android:name=".ui.activity.Record"
+                android:name=".ui.activity.RecordActivity"
                 android:hardwareAccelerated="false" />
         <activity
-                android:name=".ui.activity.Note"
+                android:name=".ui.activity.NoteActivity"
                 android:hardwareAccelerated="true" />
         <activity
-                android:name=".ui.activity.Whiteboard"
+                android:name=".ui.activity.WhiteboardActivity"
                 android:hardwareAccelerated="false" />
 
         <activity
                 android:name=".MainActivity"
                 android:theme="@style/AppTheme_NoActionBar" />
 
-        <activity android:name=".ui.activity.SplashScreen">
+        <activity android:name=".ui.activity.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -14,18 +15,29 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.ads.nativetemplates.NativeTemplateStyle
+import com.google.android.ads.nativetemplates.TemplateView
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.formats.NativeAdOptions
 import com.ramadan.notify.R
 import com.ramadan.notify.data.model.NoteTable
 import com.ramadan.notify.data.repository.NoteRepository
-import com.ramadan.notify.databinding.NoteItemBinding
-import com.ramadan.notify.ui.activity.Note
+import com.ramadan.notify.databinding.ItemNoteBinding
+import com.ramadan.notify.ui.activity.NoteActivity
+import com.ramadan.notify.utils.debug_tag
 import com.ramadan.notify.utils.startNoteActivity
 
 
 class NoteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var dataList = mutableListOf<NoteTable>()
-    private val viewNote = 0
-    private val addNote = 1
+
+    companion object {
+        private const val addNote = 2
+        private const val viewNote = 1
+        private const val nativeAd = 3
+    }
 
     fun setDataList(data: MutableList<NoteTable>) {
         dataList = data
@@ -33,20 +45,29 @@ class NoteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) addNote else viewNote
+        return when {
+            position == 0 -> addNote
+            position % 4 == 0 -> nativeAd
+            else -> viewNote
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
+            nativeAd -> {
+                val view: View = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_native_ad_templete, parent, false)
+                return AdViewHolder(view)
+            }
             addNote -> {
                 val view: View = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.add_item, parent, false)
+                    .inflate(R.layout.item_add, parent, false)
                 AddNoteViewHolder(view)
             }
             else -> {
-                val binding: NoteItemBinding = DataBindingUtil.inflate(
+                val binding: ItemNoteBinding = DataBindingUtil.inflate(
                     LayoutInflater.from(parent.context),
-                    R.layout.note_item, parent, false
+                    R.layout.item_note, parent, false
                 )
                 ViewNoteViewHolder(binding)
             }
@@ -55,66 +76,77 @@ class NoteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     override fun getItemCount(): Int {
-        return if (dataList.isNotEmpty()) dataList.size + 1 else 1
+        return if (dataList.isNotEmpty()) {
+            if (dataList.size % 4 == 0) {
+                (dataList.size / 4) + 1 + dataList.size
+            } else
+                dataList.size + 1
+        } else 1
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when {
-            getItemViewType(position) == addNote -> {
+        val mContext = holder.itemView.context
+        when (getItemViewType(position)) {
+            addNote -> {
                 (holder as AddNoteViewHolder).addNote!!.setOnClickListener {
-                    holder.mContext.startActivity(Intent(holder.mContext, Note::class.java))
+                    it.context.startActivity(Intent(it.context, NoteActivity::class.java))
                 }
             }
-            else -> {
+            viewNote -> {
                 val writtenNote: NoteTable = dataList[position - 1]
                 (holder as ViewNoteViewHolder).bind(writtenNote)
+            }
+            nativeAd -> {
+                val adLoader: AdLoader =
+                    AdLoader.Builder(mContext, mContext.getString(R.string.native_ad))
+                        .forUnifiedNativeAd { unifiedNativeAd -> // Show the ad.
+                            val styles = NativeTemplateStyle.Builder().build()
+                            val template: TemplateView = (holder as AdViewHolder).adTemplate
+                            template.setStyles(styles)
+                            template.setNativeAd(unifiedNativeAd)
+                        }
+                        .withAdListener(object : AdListener() {
+                            override fun onAdFailedToLoad(errorCode: Int) {
+                                Log.e(debug_tag, errorCode.toString())
+                            }
 
-//                populateNativeAdView(nativeAd, holder.adView)
+                            override fun onAdLoaded() {
+                                super.onAdLoaded()
+                                Log.e(debug_tag, "loaded")
+                            }
+                        })
+//                        .withNativeAdOptions(NativeAdOptions.Builder().build())
+                        .build()
+                adLoader.loadAd(AdRequest.Builder().build())
 
-//                MobileAds.initialize(holder.mContext) {}
+//                val adview: AdView
 //
-//                val adLoader = AdLoader.Builder(holder.mContext,
-//                    holder.mContext.getString(R.string.native_advanced_ad_unit_id))
-//                Log.w("Adv", "00")
+//                adview = AdView(mContext)
+//                adview.adSize = AdSize.BANNER
 //
-//                adLoader.forUnifiedNativeAd { unifiedNativeAd ->
-//                    Log.w("Adv", "01")
-//                    if (unifiedNativeAd != null) {
-//                        println("555555")
-//                        populateNativeAdView(unifiedNativeAd,
-//                            (holder as UnifiedNativeAdViewHolder).adView)
-//                    } else {
-//                        println("4444")
-//                    }
-//                }.withAdListener(object : AdListener() {
-//                    override fun onAdLoaded() {
-//                        super.onAdLoaded()
-//                        Log.w("Adv", "Success")
+//                // this is the good adview
 //
-//                    }
+//                // this is the good adview
+//                adview.adUnitId = mContext.getString(R.string.native_ad)
 //
-//                    override fun onAdFailedToLoad(adError: LoadAdError) {
-//                        Log.w("Adv", LoadAdError.UNDEFINED_DOMAIN)
-//                    }
-//                }).build().loadAd(AdRequest.Builder().build())
-
-//                val videoOptions = VideoOptions.Builder()
-//                    .setStartMuted(true)
-//                    .build()
+//                val density: Float = mContext.resources.displayMetrics.density
+//                val height = (AdSize.BANNER.height * density).roundToInt()
+//                val params = AbsListView.LayoutParams(AbsListView.LayoutParams.FILL_PARENT, height)
+//                adview.layoutParams = params
 //
-//                val adOptions = NativeAdOptions.Builder()
-//                    .setVideoOptions(videoOptions)
-//                    .build()
+//                // dont use below if testing on a device
+//                // follow https://developers.google.com/admob/android/quick-start?hl=en to setup testing device
 //
-//                adLoader.withNativeAdOptions(adOptions)
-//
-//                adLoader.build().loadAd(AdRequest.Builder().build())
-
+//                // dont use below if testing on a device
+//                // follow https://developers.google.com/admob/android/quick-start?hl=en to setup testing device
+//                val request: AdRequest = AdManagerAdRequest.Builder().build()
+//                adview.loadAd(request)
+//                holder = ViewHolder(adview)
             }
         }
     }
 
-    class ViewNoteViewHolder(private var binding: NoteItemBinding) :
+    class ViewNoteViewHolder(private var binding: ItemNoteBinding) :
         RecyclerView.ViewHolder(binding.root) {
         private val mContext: Context = itemView.context
         fun bind(note: NoteTable) {
@@ -130,40 +162,36 @@ class NoteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         private fun showOption(note: NoteTable) {
             val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(mContext)
-            val view = View.inflate(mContext, R.layout.option_dialog, null)
+            val view = View.inflate(mContext, R.layout.dialog_option, null)
             dialogBuilder.setView(view)
             val alertDialog = dialogBuilder.create()
             alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             alertDialog.show()
             alertDialog.setCancelable(true)
-            val share = view.findViewById<TextView>(R.id.share)
-            val rename = view.findViewById<TextView>(R.id.rename)
-            rename.visibility = GONE
-            val delete = view.findViewById<TextView>(R.id.delete)
-            share.setOnClickListener {
-                shareNote(note.content)
+            view.findViewById<TextView>(R.id.rename).visibility = GONE
+            view.findViewById<TextView>(R.id.share).setOnClickListener {
+                Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, note.content)
+                    type = "text/plain"
+                    mContext.startActivity(Intent.createChooser(this, "Send to"))
+                }
                 alertDialog.cancel()
             }
-            delete.setOnClickListener {
-                NoteRepository.deleteNote(mContext, note)
+            view.findViewById<TextView>(R.id.delete).setOnClickListener {
+                NoteRepository().deleteNote(mContext, note)
                 Toast.makeText(mContext, "Deleted", Toast.LENGTH_SHORT).show()
                 alertDialog.cancel()
             }
         }
-
-        private fun shareNote(noteContent: String) {
-            val shareIntent = Intent()
-            shareIntent.action = Intent.ACTION_SEND
-            shareIntent.putExtra(Intent.EXTRA_TEXT, noteContent)
-            shareIntent.type = "text/plain"
-            mContext.startActivity(Intent.createChooser(shareIntent, "Send to"))
-        }
     }
 
     class AddNoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val mContext: Context = itemView.context
         val addNote: ImageButton? = itemView.findViewById(R.id.addItem)
     }
 
+    class AdViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val adTemplate: TemplateView = itemView.findViewById(R.id.nativeTemplateView)
+    }
 
 }

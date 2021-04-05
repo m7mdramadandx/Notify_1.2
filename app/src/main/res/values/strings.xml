@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Notify</string>
-    <string name="playback_banner_id">ca-app-pub-5169956365910255/7160035996</string>
-    <string name="main_activity_banner_id">ca-app-pub-5169956365910255/1852509620</string>
     <string name="ad_id">ca-app-pub-5169956365910255~6726952079</string>
+    <string name="main_activity_banner_ad">ca-app-pub-5169956365910255/1852509620</string>
+    <string name="native_ad">ca-app-pub-5169956365910255/6896182233</string>
+    <string name="playback_banner_ad">ca-app-pub-5169956365910255/7160035996</string>
     <string name="alert_msg">Would you like to save changes?</string>
 </resources>

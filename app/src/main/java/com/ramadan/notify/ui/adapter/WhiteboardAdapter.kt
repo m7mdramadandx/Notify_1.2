@@ -22,10 +22,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.ramadan.notify.R
-import com.ramadan.notify.ui.activity.Whiteboard
-import com.ramadan.notify.ui.activity.Whiteboards
+import com.ramadan.notify.ui.activity.WhiteboardActivity
+import com.ramadan.notify.ui.fragment.WhiteboardsFragment
 import com.ramadan.notify.utils.startHomeActivity
-import kotlinx.android.synthetic.main.whiteboard_item.view.*
+import kotlinx.android.synthetic.main.item_whiteboard.view.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,12 +46,12 @@ class WhiteboardAdapter(private val filepath: Array<String?>?) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == viewNote) {
             val view: View = LayoutInflater.from(parent.context)
-                .inflate(R.layout.whiteboard_item, parent, false)
+                .inflate(R.layout.item_whiteboard, parent, false)
             return ViewWhiteboardViewHolder(view)
 
         } else {
             val view: View = LayoutInflater.from(parent.context)
-                .inflate(R.layout.add_item, parent, false)
+                .inflate(R.layout.item_add, parent, false)
             AddWhiteboardViewHolder(view)
 
         }
@@ -90,7 +90,7 @@ class WhiteboardAdapter(private val filepath: Array<String?>?) :
 
         } else {
             (holder as AddWhiteboardViewHolder).addNote!!.setOnClickListener {
-                holder.mContext.startActivity(Intent(holder.mContext, Whiteboard::class.java))
+                holder.mContext.startActivity(Intent(holder.mContext, WhiteboardActivity::class.java))
             }
         }
     }
@@ -98,7 +98,7 @@ class WhiteboardAdapter(private val filepath: Array<String?>?) :
 
     class ViewWhiteboardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val mContext: Context = itemView.context
-        private val whiteboards = Whiteboards()
+        private val whiteboards = WhiteboardsFragment()
         private val dirPath = Environment.getExternalStoragePublicDirectory(
             Environment.DIRECTORY_PICTURES
         ).path + "/Notify/"
@@ -116,7 +116,7 @@ class WhiteboardAdapter(private val filepath: Array<String?>?) :
 
         fun showOption(file: File) {
             val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(mContext)
-            val view = View.inflate(mContext, R.layout.option_dialog, null)
+            val view = View.inflate(mContext, R.layout.dialog_option, null)
             dialogBuilder.setView(view)
             val alertDialog = dialogBuilder.create()
             alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -151,14 +151,13 @@ class WhiteboardAdapter(private val filepath: Array<String?>?) :
 
         private fun renameWhiteboard(file: File) {
             val dialogBuilder = AlertDialog.Builder(mContext)
-            val view = View.inflate(mContext, R.layout.edit_text_dialog, null)
+            val view = View.inflate(mContext, R.layout.dialog_edit_text, null)
             dialogBuilder.setView(view)
             val alertDialog = dialogBuilder.create()
             alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             alertDialog.window!!.attributes.windowAnimations = R.style.SlideAnimation
             alertDialog.show()
-            val title = view.findViewById<TextView>(R.id.title)
-            title.text = "board name"
+            view.findViewById<TextView>(R.id.title).text = "board name"
             val newName = view.findViewById<View>(R.id.input) as EditText
             val confirm = view.findViewById<TextView>(R.id.confirm)
             val cancel = view.findViewById<TextView>(R.id.cancel)

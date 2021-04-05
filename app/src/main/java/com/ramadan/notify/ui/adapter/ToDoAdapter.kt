@@ -13,15 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ramadan.notify.R
 import com.ramadan.notify.data.model.ToDoTable
 import com.ramadan.notify.data.repository.ToDoRepository
-import com.ramadan.notify.databinding.TodoItemBinding
-import com.ramadan.notify.ui.activity.ToDo
-import com.ramadan.notify.ui.activity.ToDos
+import com.ramadan.notify.databinding.ItemTodoBinding
+import com.ramadan.notify.ui.fragment.ToDoFragment
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 
 
-class ToDoAdapter(val context: ToDos) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ToDoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var dataList = mutableListOf<ToDoTable>()
     private val viewToDo = 0
     private val addToDo = 1
@@ -38,12 +36,12 @@ class ToDoAdapter(val context: ToDos) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == addToDo) {
             val view: View = LayoutInflater.from(parent.context)
-                .inflate(R.layout.add_item, parent, false)
+                .inflate(R.layout.item_add, parent, false)
             AddToDoViewHolder(view)
         } else {
-            val binding: TodoItemBinding = DataBindingUtil.inflate(
+            val binding: ItemTodoBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.todo_item, parent, false
+                R.layout.item_todo, parent, false
             )
             ViewToDoViewHolder(binding)
         }
@@ -66,7 +64,7 @@ class ToDoAdapter(val context: ToDos) :
                 holder.mContext.resources.getDimension(R.dimen.add_item_height).toInt()
             holder.addToDo.setOnClickListener {
                 try {
-                    val toDo = ToDo()
+                    val toDo = ToDoFragment()
                     val transaction: FragmentTransaction = (holder.mContext as FragmentActivity)
                         .supportFragmentManager
                         .beginTransaction()
@@ -80,15 +78,14 @@ class ToDoAdapter(val context: ToDos) :
             (holder as ViewToDoViewHolder).bind(todo)
         }
 
-    class ViewToDoViewHolder(private var binding: TodoItemBinding) :
+    class ViewToDoViewHolder(private var binding: ItemTodoBinding) :
         RecyclerView.ViewHolder(binding.root) {
         private val mContext: Context = itemView.context
-
         fun bind(todo: ToDoTable) {
             binding.todoItem = todo
             binding.executePendingBindings()
             binding.delete.setOnClickListener { ToDoRepository.deleteToDo(mContext, todo) }
-            binding.checkBox.setOnCheckedChangeListener { button, b ->
+            binding.checkBox.setOnCheckedChangeListener { _, b ->
                 if (b) {
                     todo.isDone = true
                     ToDoRepository.updateToDo(mContext, todo)
