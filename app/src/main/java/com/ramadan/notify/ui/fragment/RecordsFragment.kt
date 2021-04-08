@@ -19,6 +19,9 @@ import com.ramadan.notify.ui.adapter.RecordAdapter
 import com.ramadan.notify.ui.viewModel.HomeViewModel
 import com.ramadan.notify.ui.viewModel.NoteListener
 import com.ramadan.notify.utils.STORAGE_PERMISSION
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class RecordsFragment : Fragment(), NoteListener {
     private val viewModel by lazy { ViewModelProvider(this).get(HomeViewModel::class.java) }
@@ -37,7 +40,6 @@ class RecordsFragment : Fragment(), NoteListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeData()
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
         recyclerView.layoutManager = staggeredGridLayoutManager
     }
@@ -48,15 +50,9 @@ class RecordsFragment : Fragment(), NoteListener {
     }
 
     private fun observeData() {
-        val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        if (ContextCompat.checkSelfPermission(requireContext(), permissions.toString())
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        GlobalScope.launch(Dispatchers.Main) {
             adapter = RecordAdapter(viewModel.retrieveRecords())
             recyclerView.adapter = adapter
-        } else {
-            ActivityCompat.requestPermissions(requireActivity(), permissions, STORAGE_PERMISSION)
         }
     }
 

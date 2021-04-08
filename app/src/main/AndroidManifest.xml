@@ -26,9 +26,7 @@
                 android:name="com.onesignal.NotificationServiceExtension"
                 android:value="com.ramadan.notify.utils.NotificationReceived" />
 
-        <activity
-                android:name=".ui.activity.AppIntroActivity"
-                android:theme="@style/AppTheme_NoActionBar" />
+        <activity android:name=".ui.activity.AppIntroActivity" />
 
         <activity
                 android:name=".ui.activity.RecordActivity"

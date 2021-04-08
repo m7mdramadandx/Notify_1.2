@@ -50,10 +50,6 @@
     </style>
 
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <style name="AppTheme_NoActionBar" parent="AppTheme">
         <item name="actionBarStyle">@style/DashboardActionBar</item>
         <item name="android:actionBarStyle">@style/DashboardActionBar</item>
@@ -70,8 +66,6 @@
     <style name="dashboard_title" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/grey_silver</item>
         <item name="android:textSize">32sp</item>
-        <item name="android:drawableStart">@drawable/notify_logo</item>
-        <item name="drawableSize">24dp</item>
     </style>
 
 </resources>

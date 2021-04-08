@@ -53,10 +53,10 @@ class NotesFragment : Fragment() {
     }
 
     private fun observeData() {
-//        GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(Dispatchers.Main) {
             viewModel.retrieveNotes(context!!)
                 .observe(viewLifecycleOwner, { adapter.setDataList(it) })
-//        }
+        }
     }
 
 }

@@ -16,6 +16,6 @@
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
 # If you keep the line number information, uncomment this to
-#-keepattributes LineNumberTable,SourceFile
+-keepattributes LineNumberTable,SourceFile
 #-keepnames class com.ramadan.notify.data.model.NoteTable
 #-keepnames class com.ramadan.notify.data.model.ToDoTable

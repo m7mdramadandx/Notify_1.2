@@ -3,6 +3,8 @@ package com.ramadan.notify.ui.viewModel
 import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.ramadan.notify.utils.recordsDirPath
+import com.ramadan.notify.utils.whiteboardDirPath
 import java.io.File
 
 
@@ -10,13 +12,11 @@ class HomeViewModel : ViewModel() {
 
     private var recordFilePath: Array<String?>? = null
     private var recordListFile: Array<File>? = null
-    private var recordDirectory =
-        File(Environment.getExternalStorageDirectory().path + "/Notify/Records")
+    private var recordDirectory = File(recordsDirPath)
 
     private var whiteboardFilePath: Array<String?>? = null
     private var whiteboardListFile: Array<File>? = null
-    private var whiteboardDirectory =
-        File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).path + "/Notify")
+    private var whiteboardDirectory = File(whiteboardDirPath)
     var noteListener: NoteListener? = null
 
     fun retrieveRecords(): Array<String?>? {
@@ -37,7 +37,6 @@ class HomeViewModel : ViewModel() {
 
     fun retrieveWhiteboards(): Array<String?>? {
         if (Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED) {
-            Log.e("Records", "Environment.MEDIA IS MOUNTED")
             noteListener?.onFailure("Failed to load whiteboards")
             return whiteboardFilePath
         }

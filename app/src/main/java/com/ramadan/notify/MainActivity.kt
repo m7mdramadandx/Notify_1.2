@@ -1,9 +1,18 @@
 package com.ramadan.notify
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -15,7 +24,7 @@ import com.ramadan.notify.ui.fragment.NotesFragment
 import com.ramadan.notify.ui.fragment.RecordsFragment
 import com.ramadan.notify.ui.fragment.ToDosFragment
 import com.ramadan.notify.ui.fragment.WhiteboardsFragment
-import com.ramadan.notify.utils.menuItemColor
+import com.ramadan.notify.utils.*
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment
 import com.yalantis.contextmenu.lib.MenuObject
 import com.yalantis.contextmenu.lib.MenuParams
@@ -23,6 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +43,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var contextMenuDialogFragment: ContextMenuDialogFragment
     private lateinit var adView: AdView
 
+    companion object {
+        var isConnected: Boolean = true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -40,22 +54,50 @@ class MainActivity : AppCompatActivity() {
         val tabLayout: TabLayout = findViewById(R.id.tabs)
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, 0)
         viewPagerAdapter.apply {
-            addFragment(whiteboardsFragment)
             addFragment(notesFragment)
             addFragment(toDos)
+            addFragment(whiteboardsFragment)
             addFragment(recordsFragment)
             notifyDataSetChanged()
         }
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
         tabLayout.getTabAt(0)!!.setIcon(R.drawable.note).contentDescription = "Text notes"
-        tabLayout.getTabAt(2)!!.setIcon(R.drawable.todo).contentDescription = "ToDos"
+        tabLayout.getTabAt(1)!!.setIcon(R.drawable.todo).contentDescription = "ToDos"
+        tabLayout.getTabAt(2)!!.setIcon(R.drawable.whiteboard).contentDescription = "Drawing notes"
         tabLayout.getTabAt(3)!!.setIcon(R.drawable.record).contentDescription = "Voice notes"
-        tabLayout.getTabAt(1)!!.setIcon(R.drawable.whiteboard).contentDescription = "Drawing notes"
         initMenuFragment()
         adView = findViewById(R.id.adView)
-//        loadAd()
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (!checkIfAlreadyPermission()) requestForSpecificPermission()
+        }
+        isConnected = this.isNetworkConnected()
     }
+
+    private fun requestForSpecificPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), STORAGE_PERMISSION
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        when (requestCode) {
+            STORAGE_PERMISSION -> if (grantResults[0] != PackageManager.PERMISSION_GRANTED) finish()
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun checkIfAlreadyPermission(): Boolean {
+        val result =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        return result == PackageManager.PERMISSION_GRANTED
+    }
+
 
     private fun loadAd() {
         GlobalScope.launch(Dispatchers.IO) {
@@ -66,7 +108,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        isConnected = this.isNetworkConnected()
         loadAd()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isConnected = this.isNetworkConnected()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -100,8 +148,10 @@ class MainActivity : AppCompatActivity() {
         contextMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams).apply {
             menuItemClickListener = { view, position ->
                 when (position) {
-                    0 -> NoteRepository.deleteAll(view.context)
-                    1 -> ToDoRepository.deleteAll(view.context)
+                    0 -> showAlertDialog("note")
+                    1 -> showAlertDialog("todo")
+                    2 -> showAlertDialog("whiteboard")
+                    3 -> showAlertDialog("record")
                 }
             }
         }
@@ -118,15 +168,54 @@ class MainActivity : AppCompatActivity() {
             setBgColorValue(menuItemColor)
             add(this)
         }
-        MenuObject("Delete all voice notes").apply {
-            setResourceValue(R.drawable.record)
-            setBgColorValue(menuItemColor)
-            add(this)
-        }
         MenuObject("Delete all boards").apply {
             setResourceValue(R.drawable.whiteboard)
             setBgColorValue(color)
             add(this)
         }
+        MenuObject("Delete all voice notes").apply {
+            setResourceValue(R.drawable.record)
+            setBgColorValue(menuItemColor)
+            add(this)
+        }
     }
+
+    private fun showAlertDialog(data: String) {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val layoutView = layoutInflater.inflate(R.layout.dialog_alert, null)
+        dialogBuilder.setView(layoutView)
+        val alertDialog = dialogBuilder.create()
+        alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.show()
+        layoutView.findViewById<TextView>(R.id.message).text =
+            getString(R.string.deletion_confirmation)
+        layoutView.findViewById<TextView>(R.id.discard).apply {
+            text = context.getString(R.string.back)
+            setOnClickListener { alertDialog.dismiss() }
+        }
+        layoutView.findViewById<TextView>(R.id.yes).apply {
+            text = context.getString(R.string.confirm)
+            setOnClickListener {
+                when (data) {
+                    "note" -> NoteRepository.deleteAll(alertDialog.context)
+                    "todo" -> ToDoRepository.deleteAll(alertDialog.context)
+                    "whiteboard" -> {
+                        val directory = File(whiteboardDirPath)
+                        if (directory.isDirectory) {
+                            for (fileName in directory.list()) File(directory, fileName).delete()
+                        }
+                    }
+                    "record" -> {
+                        val directory = File(recordsDirPath)
+                        if (directory.isDirectory) {
+                            for (fileName in directory.list()) File(directory, fileName).delete()
+                        }
+                    }
+                }
+                it.context.showToast("Deleted")
+                alertDialog.dismiss()
+            }
+        }
+    }
+
 }

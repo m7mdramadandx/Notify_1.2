@@ -11,11 +11,12 @@ import com.ramadan.notify.utils.startHomeActivity
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 
 
+@Suppress("DEPRECATION")
 class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        window!!.navigationBarColor = getColor(R.color.colorAccent)
+        window!!.navigationBarColor = resources.getColor(R.color.colorAccent)
         setContentView(R.layout.activity_splash_screen)
         val animation = AnimationUtils.loadAnimation(this, R.anim.animate_in_out_enter)
         animation.duration = 500

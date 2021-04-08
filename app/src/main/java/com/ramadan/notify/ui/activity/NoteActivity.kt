@@ -55,7 +55,7 @@ class NoteActivity : AppCompatActivity(), NoteListener {
     }
 
     override fun onBackPressed() {
-        if (!noteContent.text.isNullOrEmpty() && noteContent.text!!.length != viewModel.content!!.length) {
+        if (noteContent.text?.isNotEmpty() == true) {
             showAlertDialog()
         } else {
             super.onBackPressed()

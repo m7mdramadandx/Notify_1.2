@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.ramadan.notify.ui.adapter
 
 import android.app.AlertDialog
@@ -21,6 +23,8 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.formats.NativeAdOptions
+import com.ramadan.notify.MainActivity
+import com.ramadan.notify.MainActivity.Companion.isConnected
 import com.ramadan.notify.R
 import com.ramadan.notify.data.model.NoteTable
 import com.ramadan.notify.data.repository.NoteRepository
@@ -47,7 +51,7 @@ class NoteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         return when {
             position == 0 -> addNote
-            position % 4 == 0 -> nativeAd
+            position % 4 == 0 && isConnected -> nativeAd
             else -> viewNote
         }
     }
@@ -93,55 +97,25 @@ class NoteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 }
             }
             viewNote -> {
-                val writtenNote: NoteTable = dataList[position - 1]
+                var p0 = if (dataList.size % 4 == 0) {
+                    position - (dataList.size / 4) - 1
+                } else position - 1
+                if (p0 < 0) p0 = 0
+                val writtenNote: NoteTable = dataList[p0]
                 (holder as ViewNoteViewHolder).bind(writtenNote)
             }
             nativeAd -> {
-                val adLoader: AdLoader =
-                    AdLoader.Builder(mContext, mContext.getString(R.string.native_ad))
-                        .forUnifiedNativeAd { unifiedNativeAd -> // Show the ad.
-                            val styles = NativeTemplateStyle.Builder().build()
-                            val template: TemplateView = (holder as AdViewHolder).adTemplate
-                            template.setStyles(styles)
-                            template.setNativeAd(unifiedNativeAd)
-                        }
-                        .withAdListener(object : AdListener() {
-                            override fun onAdFailedToLoad(errorCode: Int) {
-                                Log.e(debug_tag, errorCode.toString())
-                            }
-
-                            override fun onAdLoaded() {
-                                super.onAdLoaded()
-                                Log.e(debug_tag, "loaded")
-                            }
-                        })
-//                        .withNativeAdOptions(NativeAdOptions.Builder().build())
-                        .build()
+                val adLoader = AdLoader.Builder(mContext, mContext.getString(R.string.native_ad))
+                    .forUnifiedNativeAd {
+                        val styles = NativeTemplateStyle.Builder().build()
+                        val template: TemplateView = (holder as AdViewHolder).adTemplate
+                        template.setStyles(styles)
+                        template.setNativeAd(it)
+                    }
+                    .withNativeAdOptions(NativeAdOptions.Builder().build())
+                    .build()
                 adLoader.loadAd(AdRequest.Builder().build())
 
-//                val adview: AdView
-//
-//                adview = AdView(mContext)
-//                adview.adSize = AdSize.BANNER
-//
-//                // this is the good adview
-//
-//                // this is the good adview
-//                adview.adUnitId = mContext.getString(R.string.native_ad)
-//
-//                val density: Float = mContext.resources.displayMetrics.density
-//                val height = (AdSize.BANNER.height * density).roundToInt()
-//                val params = AbsListView.LayoutParams(AbsListView.LayoutParams.FILL_PARENT, height)
-//                adview.layoutParams = params
-//
-//                // dont use below if testing on a device
-//                // follow https://developers.google.com/admob/android/quick-start?hl=en to setup testing device
-//
-//                // dont use below if testing on a device
-//                // follow https://developers.google.com/admob/android/quick-start?hl=en to setup testing device
-//                val request: AdRequest = AdManagerAdRequest.Builder().build()
-//                adview.loadAd(request)
-//                holder = ViewHolder(adview)
             }
         }
     }

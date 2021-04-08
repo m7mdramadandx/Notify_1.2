@@ -35,7 +35,7 @@ class PlayRecordFragment : DialogFragment(), MediaPlayer.OnErrorListener,
 
     private var file: File? = null
     private val mHandler = Handler()
-    private var mMediaPlayer: MediaPlayer? = null
+    private var player: MediaPlayer? = null
     private var seekBar: SeekBar? = null
     private var playPause: FloatingActionButton? = null
     private var recordName: TextView? = null
@@ -52,7 +52,6 @@ class PlayRecordFragment : DialogFragment(), MediaPlayer.OnErrorListener,
         val dialog = PlayRecordFragment()
         val args = Bundle().apply { mFile?.let { putString("record", it.path) } }
         dialog.arguments = args
-        println(mFile?.extension)
         return dialog
     }
 
@@ -67,7 +66,6 @@ class PlayRecordFragment : DialogFragment(), MediaPlayer.OnErrorListener,
                 - TimeUnit.MINUTES.toSeconds(minutes))
     }
 
-    @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialogBuilder = AlertDialog.Builder(activity)
         val view: View = activity!!.layoutInflater.inflate(R.layout.dialog_playback, null)
@@ -82,32 +80,32 @@ class PlayRecordFragment : DialogFragment(), MediaPlayer.OnErrorListener,
         playPause = view.findViewById(R.id.action_button) as FloatingActionButton
         recordName?.text = file!!.nameWithoutExtension
         recordDuration!!.text = String.format("%02d:%02d", minutes, seconds)
+
         seekBar!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                if (mMediaPlayer != null && fromUser) {
-                    mMediaPlayer!!.seekTo(progress)
+                if (player != null && fromUser) {
+                    player!!.seekTo(progress)
                     mHandler.removeCallbacks(mRunnable)
-                    currentProgress!!.text =
-                        getRecordLength(mMediaPlayer!!.currentPosition.toLong())
+                    currentProgress!!.text = getRecordLength(player!!.currentPosition.toLong())
                     updateSeekBar()
-                } else if (mMediaPlayer == null && fromUser) {
+                } else if (player == null && fromUser) {
                     prepareMediaPlayerFromPoint(progress)
                     updateSeekBar()
                 }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
-                mMediaPlayer?.let { mHandler.removeCallbacks(mRunnable) }
+                player?.let { mHandler.removeCallbacks(mRunnable) }
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                if (mMediaPlayer != null) {
+                if (player != null) {
                     mHandler.removeCallbacks(mRunnable)
-                    mMediaPlayer!!.seekTo(seekBar.progress)
+                    player!!.seekTo(seekBar.progress)
                     val minutes =
-                        TimeUnit.MILLISECONDS.toMinutes(mMediaPlayer!!.currentPosition.toLong())
+                        TimeUnit.MILLISECONDS.toMinutes(player!!.currentPosition.toLong())
                     val seconds =
-                        (TimeUnit.MILLISECONDS.toSeconds(mMediaPlayer!!.currentPosition.toLong())
+                        (TimeUnit.MILLISECONDS.toSeconds(player!!.currentPosition.toLong())
                                 - TimeUnit.MINUTES.toSeconds(minutes))
                     currentProgress!!.text = String.format("%02d:%02d", minutes, seconds)
                     updateSeekBar()
@@ -125,32 +123,35 @@ class PlayRecordFragment : DialogFragment(), MediaPlayer.OnErrorListener,
 
     override fun onPause() {
         super.onPause()
-        mMediaPlayer?.pause()
+        player?.pause()
     }
 
     override fun onResume() {
         super.onResume()
-        mMediaPlayer?.let { startPlaying() }
+        player?.let { startPlaying() }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mMediaPlayer?.stop()
+        player?.stop()
     }
 
     override fun onStop() {
         super.onStop()
-        mMediaPlayer?.stop()
+        player?.stop()
     }
 
     private fun prepareMediaPlayerFromPoint(progress: Int) {
-        mMediaPlayer = MediaPlayer.create(context, Uri.fromFile(file))
         try {
-            mMediaPlayer?.setOnErrorListener(this)
-            mMediaPlayer?.setOnPreparedListener(this)
-            seekBar!!.max = mMediaPlayer!!.duration
-            mMediaPlayer!!.seekTo(progress)
-            mMediaPlayer!!.setOnCompletionListener { stopPlaying() }
+            player = MediaPlayer.create(context, Uri.fromFile(file))
+            player?.let {
+                it.setOnErrorListener(this)
+                it.setOnPreparedListener(this)
+                seekBar!!.max = it.duration
+                it.seekTo(progress)
+                it.setOnCompletionListener { stopPlaying() }
+                activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         } catch (e: IllegalStateException) {
@@ -158,22 +159,23 @@ class PlayRecordFragment : DialogFragment(), MediaPlayer.OnErrorListener,
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun onPlay(isPlaying: Boolean) {
-        if (!isPlaying) mMediaPlayer?.let { startPlaying() } ?: resumePlaying() else pausePlaying()
+        if (!isPlaying) player?.let { resumePlaying() } ?: startPlaying() else pausePlaying()
     }
 
     private fun startPlaying() {
-        activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        playPause?.setImageResource(R.drawable.pause)
-        mMediaPlayer = MediaPlayer.create(context, Uri.fromFile(file))
         try {
-            mMediaPlayer!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
-            mMediaPlayer!!.setOnPreparedListener(this)
-            mMediaPlayer!!.setOnErrorListener(this)
-            seekBar!!.max = mMediaPlayer!!.duration
+            player = MediaPlayer.create(context, Uri.fromFile(file))
+            player?.let {
+                it.setAudioStreamType(AudioManager.STREAM_MUSIC)
+                it.setOnPreparedListener(this)
+                it.setOnErrorListener(this)
+                seekBar!!.max = it.duration
+                playPause?.setImageResource(R.drawable.pause)
+                activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         } catch (e: IllegalStateException) {
@@ -181,58 +183,50 @@ class PlayRecordFragment : DialogFragment(), MediaPlayer.OnErrorListener,
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        mMediaPlayer!!.setOnCompletionListener { stopPlaying() }
+        player!!.setOnCompletionListener { stopPlaying() }
         updateSeekBar()
     }
 
     private fun pausePlaying() {
-        playPause?.let {
-            it.setImageResource(R.drawable.play)
+        player?.let {
+            playPause?.setImageResource(R.drawable.play)
             mHandler.removeCallbacks(mRunnable)
-            mMediaPlayer!!.pause()
+            it.pause()
         } ?: requireContext().showToast(tryAgainMsg)
     }
 
     private fun resumePlaying() {
-        playPause?.let {
-            it.setImageResource(R.drawable.pause)
+        player?.let {
+            playPause?.setImageResource(R.drawable.pause)
             mHandler.removeCallbacks(mRunnable)
-            mMediaPlayer?.start()
+            it.start()
             updateSeekBar()
         } ?: requireContext().showToast(tryAgainMsg)
     }
 
     private fun stopPlaying() {
-        playPause?.let {
-            it.setImageResource(R.drawable.play)
-            mHandler.removeCallbacks(mRunnable)
-            mMediaPlayer?.let { it1 ->
-                it1.stop()
-                it1.reset()
-                it1.release()
-                mMediaPlayer = null
-            }
+        mHandler.removeCallbacks(mRunnable)
+        player?.let { it1 ->
+            it1.stop()
+            it1.reset()
+            it1.release()
+            player = null
             isPlaying = !isPlaying
             seekBar!!.progress = 0
             currentProgress!!.text = "00:00"
             activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            playPause?.setImageResource(R.drawable.play)
         } ?: requireContext().showToast(tryAgainMsg)
     }
 
     private val mRunnable = Runnable {
-        mMediaPlayer?.let {
-            val mCurrentPosition = mMediaPlayer!!.currentPosition
+        player?.let {
+            val mCurrentPosition = it.currentPosition
             seekBar?.progress = mCurrentPosition
-            val minutes =
-                TimeUnit.MILLISECONDS.toMinutes(mCurrentPosition.toLong())
-            val seconds =
-                (TimeUnit.MILLISECONDS.toSeconds(mCurrentPosition.toLong())
-                        - TimeUnit.MINUTES.toSeconds(minutes))
-            currentProgress!!.text = String.format(
-                "%02d:%02d",
-                minutes,
-                seconds
-            )
+            val minutes = TimeUnit.MILLISECONDS.toMinutes(mCurrentPosition.toLong())
+            val seconds = (TimeUnit.MILLISECONDS.toSeconds(mCurrentPosition.toLong())
+                    - TimeUnit.MINUTES.toSeconds(minutes))
+            currentProgress!!.text = String.format("%02d:%02d", minutes, seconds)
             updateSeekBar()
         } ?: requireContext().showToast(tryAgainMsg)
     }
@@ -244,6 +238,6 @@ class PlayRecordFragment : DialogFragment(), MediaPlayer.OnErrorListener,
     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean = false
 
     override fun onPrepared(mp: MediaPlayer?) {
-        mMediaPlayer?.start()
+        player?.start()
     }
 }

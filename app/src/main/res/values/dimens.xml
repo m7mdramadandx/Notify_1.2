@@ -1,7 +1,4 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="tool_bar_height">56dp</dimen>
     <dimen name="add_item_height">80dp</dimen>
-
-
 </resources>

@@ -2,6 +2,7 @@ package com.ramadan.notify.ui.activity
 
 
 import android.Manifest
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.github.appintro.AppIntro2
@@ -12,17 +13,19 @@ import com.ramadan.notify.R
 import com.ramadan.notify.utils.setFirstOpen
 import com.ramadan.notify.utils.startHomeActivity
 
+@Suppress("DEPRECATION")
 class AppIntroActivity : AppIntro2() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
+        window!!.navigationBarColor = Color.TRANSPARENT
         addSlide(
             AppIntroFragment.newInstance(
                 SliderPage(
                     "Colorful Notes",
                     imageDrawable = R.drawable.notes,
                     titleTypefaceFontRes = R.font.comfortaa_family,
-                    backgroundColor = getColor(R.color.colorAccent)
+                    backgroundColor = resources.getColor(R.color.colorAccent)
                 )
             )
         )
@@ -32,7 +35,7 @@ class AppIntroActivity : AppIntro2() {
                 "White and Black Boards",
                 titleTypefaceFontRes = R.font.comfortaa_family,
                 imageDrawable = R.drawable.drawing,
-                backgroundColor = getColor(R.color.colorAccent)
+                backgroundColor = resources.getColor(R.color.colorAccent)
             )
         )
 
@@ -43,7 +46,7 @@ class AppIntroActivity : AppIntro2() {
                     " ",
                     imageDrawable = R.drawable.recording,
                     titleTypefaceFontRes = R.font.comfortaa_family,
-                    backgroundColor = getColor(R.color.colorAccent)
+                    backgroundColor = resources.getColor(R.color.colorAccent)
                 )
             )
         )
@@ -54,15 +57,15 @@ class AppIntroActivity : AppIntro2() {
                 " ",
                 imageDrawable = R.drawable.daynight,
                 titleTypefaceFontRes = R.font.comfortaa_family,
-                backgroundColor = getColor(R.color.colorPrimary)
+                backgroundColor = resources.getColor(R.color.colorPrimary)
             )
         )
 
         isColorTransitionsEnabled = true
         setProgressIndicator()
         setIndicatorColor(
-            selectedIndicatorColor = getColor(R.color.white),
-            unselectedIndicatorColor = getColor(R.color.colorPrimaryDark)
+            selectedIndicatorColor = resources.getColor(R.color.white),
+            unselectedIndicatorColor = resources.getColor(R.color.colorPrimary)
         )
         isVibrate = true
         vibrateDuration = 50L
@@ -86,7 +89,6 @@ class AppIntroActivity : AppIntro2() {
 
     public override fun onSkipPressed(currentFragment: Fragment?) {
         super.onSkipPressed(currentFragment)
-
     }
 
     public override fun onDonePressed(currentFragment: Fragment?) {
